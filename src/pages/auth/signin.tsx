@@ -54,7 +54,9 @@ export default function SignIn(
         <button
           onClick={() =>
             void signIn(provider.id, {
-              callbackUrl: `${window.location.origin}/protected`,
+              callbackUrl: `${
+                process.env.NEXTAUTH_URL ?? window.location.origin
+              }`,
             })
           }
           className={`flex w-2/3 flex-row items-center justify-evenly rounded-2xl transition duration-150 hover:shadow-lg hover:shadow-slate-500/50 ${
