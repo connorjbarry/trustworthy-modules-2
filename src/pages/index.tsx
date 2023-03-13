@@ -1,12 +1,13 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 // import Link from "next/link";
-// import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 // import { api } from "~/utils/api";
-import { signIn } from "next-auth/react";
 
 const Home: NextPage = () => {
+  const { data: session, status } = useSession();
+
   return (
     <>
       <Head>
@@ -16,10 +17,22 @@ const Home: NextPage = () => {
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center">
         <h1 className="text-8xl">Home</h1>
+        {status === "authenticated" && (
+          <div className="text-red-600">{session.user.name}</div>
+        )}
         <p className="text-5xl">Trustworthy modules team 9 ece 461</p>
         <div>
-          <button onClick={() => void signIn()} className="bg-slate rounded-md">
-            Sign in
+          <button
+            onClick={() => {
+              if (status === "authenticated") {
+                void signOut();
+              } else {
+                void signIn();
+              }
+            }}
+            className="bg-slate rounded-md"
+          >
+            {status === "authenticated" ? "Sign out" : "Sign in"}
           </button>
         </div>
       </main>
