@@ -5,8 +5,11 @@ import GoogleProvider, { type GoogleProfile } from "next-auth/providers/google";
 import DiscordProvider, {
   type DiscordProfile,
 } from "next-auth/providers/discord";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { prisma } from "~/server/db";
 
 export default NextAuth({
+  adapter: PrismaAdapter(prisma),
   providers: [
     // OAuth authentication providers...
     DiscordProvider<DiscordProfile>({
