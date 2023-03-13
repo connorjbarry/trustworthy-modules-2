@@ -9,18 +9,18 @@ const NavBar = () => {
 
         <div>
           <ul className="md:flex">
-            <Link href="/">
+            <Link href="/" data-testid="nav-link">
               <li className="ml-10 text-sm uppercase hover:border-b">Home</li>
             </Link>
-            <Link href="/">
+            <Link href="/" data-testid="nav-link">
               <li className="ml-10 text-sm uppercase hover:border-b">
                 Packages
               </li>
             </Link>
-            <Link href="/">
+            <Link href="/" data-testid="nav-link">
               <li className="ml-10 text-sm uppercase hover:border-b">About</li>
             </Link>
-            <Link href="/account">
+            <Link href="/account" data-testid="nav-link">
               <li className="ml-10 text-sm uppercase hover:border-b">
                 Account
               </li>
