@@ -66,8 +66,8 @@ export default function SignIn(
           <span className="p-1 sm:p-2 lg:p-4">
             {providerStyles[index]?.icon}
           </span>
-          <span className="overflow-clip py-1 pr-1 sm:py-2 sm:pr-2 lg:py-4 lg:pr-4">
-            {provider.name}
+          <span className="overflow-clip py-1 pr-1 text-sm sm:py-2 sm:pr-2 lg:py-4 lg:pr-4">
+            Sign in with {provider.name}
           </span>
         </button>
       </div>
@@ -75,7 +75,7 @@ export default function SignIn(
   });
 
   return (
-    <div className="flex h-screen w-screen flex-row items-center justify-center bg-slate-900">
+    <div className="flex h-screen w-screen flex-row items-center justify-center bg-slate-600">
       <div className="flex w-1/2 flex-col items-center justify-center rounded-lg bg-slate-200 text-center sm:w-1/3 2xl:w-1/5">
         {providerList}
       </div>
