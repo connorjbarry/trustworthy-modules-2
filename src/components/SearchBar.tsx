@@ -1,7 +1,13 @@
 import React from "react";
 import SearchIcon from "./Icons/SearchIcon";
 
-const SearchBar = () => {
+const SearchBar = ({
+  input,
+  setInput,
+}: {
+  input: string;
+  setInput: React.Dispatch<React.SetStateAction<string>>;
+}) => {
   return (
     <form>
       <label
@@ -17,6 +23,8 @@ const SearchBar = () => {
         <input
           type="search"
           id="default-search"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
           className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 "
           placeholder="Search Packages..."
           required

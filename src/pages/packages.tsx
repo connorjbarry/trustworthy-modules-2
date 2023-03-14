@@ -1,18 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import SearchBar from "~/components/SearchBar";
 import { Button, ButtonVariant } from "~/components/Button/Button";
 
 const Packages = () => {
+  const [searchInput, setSearchInput] = useState<string>("");
+
   return (
     <>
       <div className="flex w-full items-center justify-between gap-4">
         <div className="mx-4 w-full">
-          <SearchBar />
+          <SearchBar input={searchInput} setInput={setSearchInput} />
         </div>
-        <Button variant={ButtonVariant.Danger} className="min-w-max">
+        <Button variant={ButtonVariant.Danger} className="h-full min-w-max">
           Add Package
         </Button>
       </div>
+      <p>{searchInput}</p>
     </>
   );
 };
