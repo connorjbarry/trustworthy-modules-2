@@ -32,7 +32,7 @@ const Button = ({
   };
   return (
     <button
-      className={`mr-2 mb-2 rounded-lg px-5 py-2.5 text-sm font-medium text-white focus:outline-none focus:ring-4 ${
+      className={`rounded-lg px-5 py-2.5 text-sm font-medium text-white focus:outline-none focus:ring-4 ${
         colors[variant]
       } ${className ?? ""}`}
       {...rest}
