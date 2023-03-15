@@ -11,7 +11,10 @@ const Packages = () => {
         <div className="mx-4 w-full">
           <SearchBar input={searchInput} setInput={setSearchInput} />
         </div>
-        <Button variant={ButtonVariant.Danger} className="h-full min-w-max">
+        <Button
+          variant={ButtonVariant.Danger}
+          className="mr-2 h-full min-w-max"
+        >
           Add Package
         </Button>
       </div>

@@ -11,6 +11,9 @@ import {
 import { BsGoogle, BsGithub } from "react-icons/bs";
 import { FaDiscord } from "react-icons/fa";
 import { type BuiltInProviderType } from "next-auth/providers";
+import { IoIosArrowBack } from "react-icons/io";
+import Link from "next/link";
+
 interface ProviderStylesType {
   bgcolor: string;
   iconcolor: string;
@@ -42,6 +45,7 @@ export default function SignIn(
   > | null
 ) {
   if (!providers) return null;
+
   const providerList = Object.values(
     providers.providers as unknown as string[]
   ).map((provider: any, index: number) => {
@@ -75,11 +79,16 @@ export default function SignIn(
   });
 
   return (
-    <div className="flex h-screen w-screen flex-row items-center justify-center bg-slate-600">
-      <div className="flex w-1/2 flex-col items-center justify-center rounded-lg bg-slate-200 text-center sm:w-1/3 2xl:w-1/5">
-        {providerList}
+    <>
+      <Link className="absolute top-4 left-4" href="/">
+        <IoIosArrowBack size={20} className="cursor-pointer" />
+      </Link>
+      <div className="flex h-screen w-screen flex-row items-center justify-center">
+        <div className="flex w-1/2 flex-col items-center justify-center rounded-lg text-center sm:w-1/3 2xl:w-1/5">
+          {providerList}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
