@@ -23,6 +23,7 @@ const SearchBar = ({
         <input
           type="search"
           id="default-search"
+          data-testid="package-search-input"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           className="block w-full rounded-lg border border-gray-700 bg-[#0E1117] p-4 pl-10 text-sm text-white focus:outline-none"
