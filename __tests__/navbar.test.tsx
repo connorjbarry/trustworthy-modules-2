@@ -2,10 +2,16 @@
 import NavBar from "../src/components/NavBar";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import * as nextRouter from "next/router";
 
 // TODO: Add tests for NavBar component
 
 describe("NavBar testing", () => {
+  beforeAll(() => {
+    const useRouter = jest.spyOn(nextRouter, "useRouter");
+    useRouter.mockImplementation(() => ({ route: "/" }));
+  });
+
   it("should render the NavBar component", () => {
     render(<NavBar />);
     expect(screen.getByTestId("nav")).toBeInTheDocument();
@@ -14,7 +20,7 @@ describe("NavBar testing", () => {
     render(<NavBar />);
     expect(screen.getAllByTestId("nav-link")).toHaveLength(4);
   });
-  it("should have an image that links to homepage", () => {
+  it("should have a title that links to homepage", () => {
     render(<NavBar />);
     // the parent element should have attribute href="/"
     expect(
