@@ -19,9 +19,11 @@ describe("Package Screen testing", () => {
     await userEvent.click(screen.getByTestId("add-package-btn"));
     expect(screen.getByTestId("add-package-modal")).toBeInTheDocument();
   });
-  it("search bar should hold the value that is typed in", () => {
+  it("search bar should hold the value that is typed in", async () => {
     render(<Packages />);
-    userEvent.type(screen.getByTestId("package-search-input"), "test");
+    const searchBar = screen.getByTestId("package-search-input");
+    expect(searchBar).toBeInTheDocument();
+    await userEvent.type(searchBar, "test");
     expect(screen.getByTestId("package-search-input")).toHaveValue("test");
   });
 });
