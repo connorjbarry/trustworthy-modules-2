@@ -5,6 +5,9 @@ import {
   type DefaultSession,
 } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
+import GithubProvider, { type GithubProfile } from "next-auth/providers/github";
+import GoogleProvider, { type GoogleProfile } from "next-auth/providers/google";
+import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
@@ -16,11 +19,13 @@ import { prisma } from "~/server/db";
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
 declare module "next-auth" {
+  type UserRole = string | null;
+
   interface Session extends DefaultSession {
     user: {
       id: string;
       // ...other properties
-      // role: UserRole;
+      role: UserRole;
     } & DefaultSession["user"];
   }
 
@@ -40,7 +45,8 @@ export const authOptions: NextAuthOptions = {
     session({ session, user }) {
       if (session.user) {
         session.user.id = user.id;
-        // session.user.role = user.role; <-- put other properties on the session here
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        session.user.role = user.role;
       }
       return session;
     },
@@ -48,8 +54,45 @@ export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
+      clientId: process.env.DISCORD_CLIENT_ID as string,
+      clientSecret: process.env.DISCORD_CLIENT_SECRET as string,
+    }),
+    GithubProvider<GithubProfile>({
+      id: "github",
+      clientId: process.env.GITHUB_CLIENT_ID as string,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+    }),
+    GoogleProvider<GoogleProfile>({
+      id: "google",
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    }),
+    // Credentials authentication provider...
+    Credentials({
+      id: "credentials",
+      name: "Credentials",
+      credentials: {
+        username: { label: "Username", type: "text", placeholder: "jsmith" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        const user = await prisma.user.findUnique({
+          where: {
+            username: credentials?.username,
+          },
+        });
+
+        if (!user) {
+          throw new Error("No user found");
+        }
+
+        // compare password with db password not using bcrypt
+        if (user.password !== credentials?.password) {
+          throw new Error("Invalid password");
+        }
+
+        return user;
+      },
     }),
     /**
      * ...add more providers here.

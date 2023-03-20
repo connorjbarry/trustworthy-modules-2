@@ -5,6 +5,7 @@ import GoogleProvider, { type GoogleProfile } from "next-auth/providers/google";
 import DiscordProvider, {
   type DiscordProfile,
 } from "next-auth/providers/discord";
+import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "~/server/db";
 
@@ -26,6 +27,36 @@ export default NextAuth({
       id: "google",
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    }),
+    // Credentials authentication provider...
+    Credentials({
+      id: "credentials",
+      name: "Credentials",
+      credentials: {
+        credentials: { label: "Credentials", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        const user = await prisma.user.findFirst({
+          where: {
+            OR: [
+              { email: credentials?.credentials },
+              { username: credentials?.credentials },
+            ],
+          },
+        });
+
+        if (!user) {
+          throw new Error("No user found");
+        }
+
+        // compare password with db password not using bcrypt
+        if (user.password !== credentials?.password) {
+          throw new Error("Invalid password");
+        }
+
+        return user;
+      },
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,

@@ -14,7 +14,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   const router = useRouter();
 
-  if (router.route === "/auth/signin") {
+  if (router.route === "/auth/signin" || router.route === "/auth/register") {
     return (
       <SessionProvider session={session}>
         <Component {...pageProps} />
