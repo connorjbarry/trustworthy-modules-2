@@ -6,18 +6,21 @@ import { api } from "../utils/api";
 const Account = () => {
   const { data: session, status } = useSession();
   const isAuthed = status === "authenticated";
-  const currentUser = api.user.getCurrentUser.useQuery({
-    email: session?.user?.email,
-  });
+  let currentUser;
+  if (isAuthed) {
+    currentUser = api.user.getCurrentUser.useQuery({
+      email: session?.user?.email,
+    });
+  }
 
   return (
     <div className="flex h-full flex-col items-center justify-center">
       <p>Account</p>
       {isAuthed ? (
         <div>
-          <p>Logged in as {currentUser.data?.name}</p>
-          <p>{currentUser.data?.email}</p>
-          <p>{currentUser.data?.role}</p>
+          <p>Logged in as {currentUser?.data?.name}</p>
+          <p>{currentUser?.data?.email}</p>
+          <p>{currentUser?.data?.role}</p>
         </div>
       ) : (
         <p>Not signed in</p>

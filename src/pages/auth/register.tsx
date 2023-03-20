@@ -1,9 +1,10 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { IoIosArrowBack } from "react-icons/io";
 import { Button, ButtonVariant } from "../../components/Button/Button";
 import { api } from "../../utils/api";
-import { signIn } from "next-auth/react";
+// import { signIn } from "next-auth/react";
 
 type TUserRegisterData = {
   username: string;
@@ -12,6 +13,8 @@ type TUserRegisterData = {
 };
 
 const Register = () => {
+  const router = useRouter();
+
   const [userSignInData, setUserSignInData] = useState<TUserRegisterData>({
     username: "",
     email: "",
@@ -30,6 +33,7 @@ const Register = () => {
   const userRegisterFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     trpcAuth.mutate(userSignInData);
+    void router.push("/account");
   };
 
   return (
