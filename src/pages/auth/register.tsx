@@ -41,7 +41,7 @@ const Register = () => {
       <Link className="absolute top-4 left-4" href="/account">
         <IoIosArrowBack size={20} className="cursor-pointer" />
       </Link>
-      <div className="flex h-screen w-screen items-center justify-center">
+      <div className="flex h-screen w-screen flex-col items-center justify-center">
         <form className="w-1/3" onSubmit={userRegisterFormSubmit}>
           <div className="mb-6">
             <label
@@ -99,6 +99,15 @@ const Register = () => {
             Sign In
           </Button>
         </form>
+        <div>
+          Already have an account? Sign in{" "}
+          <Link
+            href="/auth/signin"
+            className="text-blue-600 hover:text-blue-700"
+          >
+            here
+          </Link>
+        </div>
       </div>
     </>
   );
