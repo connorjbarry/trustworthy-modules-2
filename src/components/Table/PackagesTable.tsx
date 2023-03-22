@@ -1,4 +1,5 @@
 import { type IndivPkg } from "@prisma/client";
+import Link from "next/link";
 import React from "react";
 import { Button, ButtonVariant } from "../Button/Button";
 
@@ -45,7 +46,18 @@ const PackagesTable = ({ pkgs }: { pkgs: IndivPkg[] }) => {
                         className="whitespace-nowrap px-6 py-4 font-medium"
                         key={idx}
                       >
-                        {pkg[pkgInfo] ? pkg[pkgInfo] : "N/A"}
+                        {pkgInfo === "name" ? (
+                          <Link
+                            href={`packages/${pkg["id"]}`}
+                            className="hover:text-blue-500 hover:underline"
+                          >
+                            {pkg[pkgInfo]}
+                          </Link>
+                        ) : pkg[pkgInfo] ? (
+                          pkg[pkgInfo]
+                        ) : (
+                          "N/A"
+                        )}
                       </th>
                     );
                 })}
@@ -55,30 +67,6 @@ const PackagesTable = ({ pkgs }: { pkgs: IndivPkg[] }) => {
               </tr>
             );
           })}
-          {/* <tr className="border-b border-gray-700 bg-gray-800">
-            <th scope="row" className="whitespace-nowrap px-6 py-4 font-medium">
-              Apple MacBook Pro 17
-            </th>
-            <td className="px-6 py-4">Silver</td>
-            <td className="px-6 py-4">Laptop</td>
-            <td className="px-6 py-4">$2999</td>
-          </tr>
-          <tr className="border-b  border-gray-700 bg-gray-800">
-            <th scope="row" className="whitespace-nowrap px-6 py-4 font-medium">
-              Microsoft Surface Pro
-            </th>
-            <td className="px-6 py-4">White</td>
-            <td className="px-6 py-4">Laptop PC</td>
-            <td className="px-6 py-4">$1999</td>
-          </tr>
-          <tr className=" bg-gray-800">
-            <th scope="row" className="whitespace-nowrap px-6 py-4 font-medium">
-              Magic Mouse 2
-            </th>
-            <td className="px-6 py-4">Black</td>
-            <td className="px-6 py-4">Accessories</td>
-            <td className="px-6 py-4">$99</td>
-          </tr> */}
         </tbody>
       </table>
     </div>
