@@ -26,4 +26,9 @@ describe("Package Screen testing", () => {
     await userEvent.type(searchBar, "test");
     expect(screen.getByTestId("package-search-input")).toHaveValue("test");
   });
+  it("should render the add package modal when the add package button is clicked", async () => {
+    render(<Packages />);
+    await userEvent.click(screen.getByTestId("add-package-btn"));
+    expect(screen.getByTestId("add-package-modal")).toBeInTheDocument();
+  });
 });
