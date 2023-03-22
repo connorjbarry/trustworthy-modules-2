@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import SearchBar from "../components/SearchBar";
-import { Button, ButtonVariant } from "../components/Button/Button";
-import AddPackageModal from "../components/AddPackageModal";
+import SearchBar from "../../components/SearchBar";
+import { Button, ButtonVariant } from "../../components/Button/Button";
+import AddPackageModal from "../../components/AddPackageModal";
 import PackagesTable from "~/components/Table/PackagesTable";
 import { api } from "~/utils/api";
 
@@ -31,9 +31,12 @@ const Packages = () => {
           Add Package
         </Button>
       </div>
-      <div className="flex items-center justify-center">
+      <div className="z-10 flex items-center justify-center">
         {showAddPackageModal && (
-          <AddPackageModal setShowModal={setShowAddPackageModal} />
+          <AddPackageModal
+            setShowModal={setShowAddPackageModal}
+            // pkgs={allPkgs}
+          />
         )}
       </div>
       <div className="mt-6 p-4">
