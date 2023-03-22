@@ -67,7 +67,7 @@ const PackagesTable = ({ pkgs }: { pkgs: IndivPkg[] }) => {
                       </th>
                     );
                 })}
-                <td className="px-6 py-4">
+                <td className="py-4 pl-6">
                   <Button variant={ButtonVariant.Primary}>Download</Button>
                 </td>
               </tr>

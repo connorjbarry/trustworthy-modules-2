@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import SearchBar from "../../components/SearchBar";
 import { Button, ButtonVariant } from "../../components/Button/Button";
 import AddPackageModal from "../../components/AddPackageModal";
-import PackagesTable from "~/components/Table/PackagesTable";
-import { api } from "~/utils/api";
+import PackagesTable from "../../components/Table/PackagesTable";
+import { api } from "../../utils/api";
 import { type IndivPkg } from "@prisma/client";
 
 const Packages = () => {
