@@ -4,6 +4,12 @@ import React from "react";
 import { Button, ButtonVariant } from "../Button/Button";
 
 const PackagesTable = ({ pkgs }: { pkgs: IndivPkg[] }) => {
+  if (pkgs.length === 0)
+    return (
+      <div className="mt-6 flex items-center justify-center">
+        There are no packages in the registry
+      </div>
+    );
   return (
     <div className="relative overflow-x-auto rounded-md">
       <table className="w-full text-left text-sm text-gray-400">

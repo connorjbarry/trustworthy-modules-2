@@ -13,15 +13,16 @@ const Packages = () => {
     useState<boolean>(false);
   let filteredPkgs: any;
 
-  const allPkgs = api.packages.getAll.useQuery();
+  const allPkgs = api.packages.getAll.useQuery() ?? null;
   if (allPkgs.isLoading)
     return <div className="flex items-center justify-center">Loading...</div>;
   if (searchInput !== "") {
-    filteredPkgs = allPkgs.data?.filter(
-      (pkg) =>
-        pkg.name.toLowerCase().includes(searchInput.toLowerCase()) ||
-        pkg.author?.toLowerCase().includes(searchInput.toLowerCase())
-    );
+    filteredPkgs =
+      allPkgs.data?.filter(
+        (pkg) =>
+          pkg.name.toLowerCase().includes(searchInput.toLowerCase()) ||
+          pkg.author?.toLowerCase().includes(searchInput.toLowerCase())
+      ) ?? null;
     if ((filteredPkgs as IndivPkg[]).length === 0) filteredPkgs = null;
   }
 
@@ -53,7 +54,7 @@ const Packages = () => {
         )}
       </div>
       <div className="mt-6 p-4">
-        {allPkgs.data ? (
+        {allPkgs.data && allPkgs !== null ? (
           filteredPkgs && filteredPkgs !== null ? (
             <PackagesTable pkgs={filteredPkgs as IndivPkg[]} />
           ) : (
