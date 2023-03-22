@@ -2,6 +2,11 @@ import React, { useState } from "react";
 import { GrFormClose } from "react-icons/gr";
 import { Button, ButtonVariant } from "./Button/Button";
 import { api } from "../utils/api";
+import type {
+  QueryObserverResult,
+  RefetchOptions,
+  RefetchQueryFilters,
+} from "@tanstack/react-query";
 // import { type UseTRPCQueryResult } from "@trpc/react-query/shared";
 // import { type IndivPkg } from "@prisma/client";
 
@@ -15,10 +20,12 @@ type PackageInfo = {
 
 const AddPackageModal = ({
   setShowModal,
-}: // pkgs,
-{
+  refetch,
+}: {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  // pkgs: UseTRPCQueryResult<IndivPkg[], any>;
+  refetch: <TPageData>(
+    options?: RefetchOptions & RefetchQueryFilters<TPageData>
+  ) => Promise<QueryObserverResult<unknown, unknown>>;
 }) => {
   const [packageInfo, setPackageInfo] = useState<PackageInfo>({
     name: "",
@@ -28,7 +35,11 @@ const AddPackageModal = ({
     file: "",
   });
 
-  const packageUpload = api.packages.createPackage.useMutation();
+  const { mutate } = api.packages.createPackage.useMutation({
+    onSuccess: async () => {
+      await refetch();
+    },
+  });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPackageInfo({
@@ -39,9 +50,8 @@ const AddPackageModal = ({
 
   const handlePackageUpload = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    packageUpload.mutate(packageInfo);
+    mutate(packageInfo);
     setShowModal(false);
-    // await pkgs.refetch().catch((err) => console.log(err));
   };
 
   return (
@@ -63,7 +73,10 @@ const AddPackageModal = ({
             <h3 className="mb-4 text-xl font-medium">
               Add a Package to the Registry
             </h3>
-            <form className="space-y-6" onSubmit={handlePackageUpload}>
+            <form
+              className="space-y-6"
+              onSubmit={(e) => void handlePackageUpload(e)}
+            >
               <div>
                 <label
                   htmlFor="name"

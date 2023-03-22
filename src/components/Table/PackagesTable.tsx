@@ -6,8 +6,8 @@ import { Button, ButtonVariant } from "../Button/Button";
 const PackagesTable = ({ pkgs }: { pkgs: IndivPkg[] }) => {
   if (pkgs.length === 0)
     return (
-      <div className="mt-6 flex items-center justify-center">
-        There are no packages in the registry
+      <div className="mt-6 flex items-center justify-center uppercase">
+        There are no packages available
       </div>
     );
   return (
