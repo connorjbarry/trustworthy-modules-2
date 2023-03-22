@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { GrFormClose } from "react-icons/gr";
 import { Button, ButtonVariant } from "./Button/Button";
 import { api } from "../utils/api";
+// import { type UseTRPCQueryResult } from "@trpc/react-query/shared";
+// import { type IndivPkg } from "@prisma/client";
 
 type PackageInfo = {
   name: string;
@@ -13,8 +15,10 @@ type PackageInfo = {
 
 const AddPackageModal = ({
   setShowModal,
-}: {
+}: // pkgs,
+{
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  // pkgs: UseTRPCQueryResult<IndivPkg[], any>;
 }) => {
   const [packageInfo, setPackageInfo] = useState<PackageInfo>({
     name: "",
@@ -37,13 +41,14 @@ const AddPackageModal = ({
     e.preventDefault();
     packageUpload.mutate(packageInfo);
     setShowModal(false);
+    // await pkgs.refetch().catch((err) => console.log(err));
   };
 
   return (
     <div
       tabIndex={-1}
       data-testid="add-package-modal"
-      className="inset-0 z-50 flex h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden p-4"
+      className="relative inset-0 z-50 flex h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden p-4"
     >
       <div className="relative h-auto w-full max-w-md">
         <div className="relative rounded-lg bg-gray-700 shadow">
