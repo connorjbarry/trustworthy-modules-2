@@ -24,30 +24,30 @@ const MetricsTable = ({ pkg }: { pkg: IndivPkg | undefined }) => {
         <tbody>
           {Object.keys(pkg as unknown as string[]).map((key) => {
             if (
-              key === "name" ||
-              key === "totalScore" ||
-              key === "id" ||
-              key === "version" ||
-              key === "author" ||
-              key === "githubLink" ||
-              key === "fileURL"
+              key === "rampUp" ||
+              key === "correctness" ||
+              key === "licenseCompatability" ||
+              key === "busFactor" ||
+              key === "responsiveness" ||
+              key === "fractionDependencies" ||
+              key === "fractionReviewed"
             )
-              return null;
-
-            return (
-              <>
-                <tr className=" bg-gray-800">
-                  <th
-                    scope="row"
-                    className="whitespace-nowrap px-6 py-4 font-medium uppercase"
-                    key={key}
-                  >
-                    {key.split(/(?=[A-Z])/).join(" ")}
-                  </th>
-                  <td className="px-6 py-4">{pkg[key]}</td>
-                </tr>
-              </>
-            );
+              return (
+                <>
+                  <tr className=" bg-gray-800">
+                    <th
+                      scope="row"
+                      className="whitespace-nowrap px-6 py-4 font-medium uppercase"
+                      key={key}
+                    >
+                      {key.split(/(?=[A-Z])/).join(" ")}
+                    </th>
+                    <td className="px-6 py-4">
+                      {pkg[key] as unknown as number}
+                    </td>
+                  </tr>
+                </>
+              );
           })}
         </tbody>
         <tfoot>
