@@ -6,6 +6,7 @@ import AddPackageModal from "../../components/AddPackageModal";
 import PackagesTable from "../../components/Table/PackagesTable";
 import { api } from "../../utils/api";
 import { type IndivPkg } from "@prisma/client";
+// import { useSession } from "next-auth/react";
 
 const Packages = () => {
   const [searchInput, setSearchInput] = useState<string>("");

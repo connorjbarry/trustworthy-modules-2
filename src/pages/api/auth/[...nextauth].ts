@@ -50,7 +50,6 @@ export default NextAuth({
           throw new Error("No user found");
         }
 
-        // compare password with db password not using bcrypt
         if (user.password !== credentials?.password) {
           throw new Error("Invalid password");
         }
