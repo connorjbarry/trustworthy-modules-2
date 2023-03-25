@@ -1,7 +1,8 @@
 import { useSession } from "next-auth/react";
 import { api } from "~/utils/api";
 import type { User } from "@prisma/client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { BsThreeDotsVertical } from "react-icons/bs";
 
 /*
 * UserRow is the component that renders a single user
@@ -9,57 +10,78 @@ import { useEffect, useState } from "react";
 const UserRow = ( user: User ): JSX.Element => {
     // since we are updating the role of a user we need to use a useState to keep track of the current role
     const [ role, setRole ] = useState( user.role );
-    
+
     // state for the edit button on toggle
     const [ isEditing, setIsEditing ] = useState( false );
 
     // function to change the role of a user
-    const changeRole = api.user.updateUserRole.useMutation();
+    const {mutate, isLoading} = api.user.updateUserRole.useMutation(
+        {
+            onSuccess: () => {
+                // setRole here
+                setRole( role === "ADMIN" ? "USER" : "ADMIN" );
+            },
+        }
+    );
+
+    // confirmation box to make sure the user wants to change the role
+    const confirmChange = () => {
+        if (role === "ADMIN") {
+            return window.confirm( "Are you sure you want to demote this user?" );
+        } else {
+            return window.confirm( "Are you sure you want to promote this user?" );
+        }
+    };
 
     return(
         <li className="py-3 sm:py-4">
-            <div className="flex items-center space-x-4">
+            <div className="flex flex-row items-center space-x-4">
                 <div className="flex-1 min-w-0">
                     <p className="text-base font-medium truncate text-white">
-                        {user.username}
+                        {user.username? user.username : user.name}
                     </p>
                     <p className="text-sm truncate text-gray-400">
                         {user.email}
                     </p>
                 </div>
                 <div className="inline-flex items-center text-base font-semibold text-white">
-                    {role}
+                    {isLoading ? "Updating..."  : role}
                 </div>
                 <div>
                     {
                         !isEditing ? (
-                            <button onClick={ () => setIsEditing( true ) }>
-                                <span className="text-sm">edit</span>
+                            <button 
+                                onClick={ () => setIsEditing( true ) }
+                                className="p-1">
+                                <BsThreeDotsVertical />
                             </button>
                         ) : null
                     }
                     {
                         isEditing ? (
-                            <div className="flex flex-col">
-                                <button onClick={() => {
+                            <div className="flex flex-col justify-center items-center text-sm">
+                                <button 
+                                    onClick={() => {
                                     setIsEditing( false ); 
-                                    changeRole.mutate({id: user.id, role: role}); 
-                                    if (role === "ADMIN") {
-                                        setRole( "USER" );
-                                    } else {
-                                        setRole( "ADMIN" );
+                                    if(confirmChange()){
+                                        mutate({id: user.id, role: role}); 
                                     }
-                                    }}>
+                                    }}
+                                    className={`${role == "ADMIN" ? "bg-red-500" : "bg-green-500"} rounded-lg p-1`}
+                                >
                                     {
                                         role === "ADMIN" ? (
-                                            <span className="text-sm">demote</span>
+                                            <span>Demote</span>
                                         ) : (
-                                            <span className="text-sm">promote</span>
+                                            <span>Promote</span>
                                         )
                                     }
                                 </button>
-                                <button onClick={() => setIsEditing( false )}>
-                                    <span className="text-sm">cancel</span>
+                                <button 
+                                    onClick={() => setIsEditing( false )}
+                                    className="bg-gray-400 rounded-lg mt-1 p-1 w-full"
+                                >
+                                    <span>Cancel</span>
                                 </button>
                             </div>
                         ) : null
@@ -78,6 +100,9 @@ const UserList = (): JSX.Element => {
         return <div></div>;
     }
 
+    // if the user role is admin, get the list of all users
+    const users = api.user.getAllUsers.useQuery().data;
+
     // query to get the current user
     const currentUser = api.user.getCurrentUser.useQuery({
         email: session?.user?.email,
@@ -87,14 +112,11 @@ const UserList = (): JSX.Element => {
     if (currentUser?.data?.role !== "ADMIN") {
         return <div></div>
     }
-    
-    // if the user role is admin, get the list of all users
-    const users = api.user.getAllUsers.useQuery().data;
 
     const userRows = users?.map( ( user ) => <UserRow key={user.id} {...user} /> );
 
     return (
-        <div>
+        <div className="w-11/12 md:w-1/2 px-2 py-4 my-20">
             <ul className="flex flex-col justify-between">
                 {userRows}
             </ul>
