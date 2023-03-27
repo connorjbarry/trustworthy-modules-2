@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 
 const ProtectedPage = (): JSX.Element => {
   const router = useRouter();
-  const { data: session } = useSession({
+  const { data: session, status } = useSession({
     required: true,
     onUnauthenticated() {
       // The user is not authenticated, handle it here.
@@ -15,6 +15,7 @@ const ProtectedPage = (): JSX.Element => {
   });
 
   const user = session?.user?.name;
+  console.log(session, status);
 
   return (
     <>
