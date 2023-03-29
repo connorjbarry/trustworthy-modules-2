@@ -1,17 +1,64 @@
-import React from "react";
+import React, { useState } from "react";
 import { GrFormClose } from "react-icons/gr";
 import { Button, ButtonVariant } from "./Button/Button";
+import { api } from "../utils/api";
+import type {
+  QueryObserverResult,
+  RefetchOptions,
+  RefetchQueryFilters,
+} from "@tanstack/react-query";
+// import { type UseTRPCQueryResult } from "@trpc/react-query/shared";
+// import { type IndivPkg } from "@prisma/client";
+
+type PackageInfo = {
+  name: string;
+  url: string;
+  author: string;
+  version: string;
+  file: string;
+};
 
 const AddPackageModal = ({
   setShowModal,
+  refetch,
 }: {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  refetch: <TPageData>(
+    options?: RefetchOptions & RefetchQueryFilters<TPageData>
+  ) => Promise<QueryObserverResult<unknown, unknown>>;
 }) => {
+  const [packageInfo, setPackageInfo] = useState<PackageInfo>({
+    name: "",
+    url: "",
+    author: "",
+    version: "",
+    file: "",
+  });
+
+  const { mutate } = api.packages.createPackage.useMutation({
+    onSuccess: async () => {
+      await refetch();
+    },
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPackageInfo({
+      ...packageInfo,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handlePackageUpload = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    mutate(packageInfo);
+    setShowModal(false);
+  };
+
   return (
     <div
       tabIndex={-1}
       data-testid="add-package-modal"
-      className="inset-0 z-50 flex h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden p-4"
+      className="relative inset-0 z-50 flex h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden p-4"
     >
       <div className="relative h-auto w-full max-w-md">
         <div className="relative rounded-lg bg-gray-700 shadow">
@@ -26,37 +73,88 @@ const AddPackageModal = ({
             <h3 className="mb-4 text-xl font-medium">
               Add a Package to the Registry
             </h3>
-            <form className="space-y-6">
+            <form
+              className="space-y-6"
+              onSubmit={(e) => void handlePackageUpload(e)}
+            >
               <div>
                 <label
-                  htmlFor="email"
+                  htmlFor="name"
                   className="mb-2 block text-sm font-medium"
                 >
-                  Your email
+                  Name <span className="text-red-400">*</span>
                 </label>
                 <input
-                  type="email"
-                  name="email"
-                  id="email"
+                  type="text"
+                  name="name"
+                  id="name"
+                  onChange={handleInputChange}
                   className="block w-full rounded-lg border border-gray-500 bg-gray-600 p-2.5 text-sm text-white placeholder-gray-400"
-                  placeholder="name@company.com"
+                  placeholder="Express"
                   required
                 />
               </div>
               <div>
                 <label
-                  htmlFor="password"
+                  htmlFor="url"
                   className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Your password
+                  Github Url
                 </label>
                 <input
-                  type="password"
-                  name="password"
-                  id="password"
-                  placeholder="••••••••"
+                  type="text"
+                  name="url"
+                  id="url"
+                  onChange={handleInputChange}
+                  placeholder="https://github.com/expressjs/express"
                   className="block w-full rounded-lg border border-gray-500 bg-gray-600 p-2.5 text-sm text-white placeholder-gray-400"
-                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="author"
+                  className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Author
+                </label>
+                <input
+                  type="text"
+                  name="author"
+                  id="author"
+                  onChange={handleInputChange}
+                  placeholder="ExpressJS"
+                  className="block w-full rounded-lg border border-gray-500 bg-gray-600 p-2.5 text-sm text-white placeholder-gray-400"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="version"
+                  className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Version
+                </label>
+                <input
+                  type="text"
+                  name="version"
+                  id="version"
+                  onChange={handleInputChange}
+                  placeholder="1.x.x"
+                  className="block w-full rounded-lg border border-gray-500 bg-gray-600 p-2.5 text-sm text-white placeholder-gray-400"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="upload"
+                  className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Upload Package <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="file"
+                  name="upload"
+                  id="upload"
+                  onChange={handleInputChange}
+                  className="block w-full rounded-lg border border-gray-500 bg-gray-600 p-2.5 text-sm text-white placeholder-gray-400"
                 />
               </div>
               <Button
@@ -66,15 +164,6 @@ const AddPackageModal = ({
               >
                 Submit Package
               </Button>
-              <div className="text-sm font-medium text-gray-500 dark:text-gray-300">
-                Not registered?{" "}
-                <a
-                  href="#"
-                  className="text-blue-700 hover:underline dark:text-blue-500"
-                >
-                  Create account
-                </a>
-              </div>
             </form>
           </div>
         </div>

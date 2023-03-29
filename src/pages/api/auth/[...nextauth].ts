@@ -7,7 +7,7 @@ import DiscordProvider, {
 } from "next-auth/providers/discord";
 import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { prisma } from "~/server/db";
+import { prisma } from "../../../server/db";
 
 export default NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -50,7 +50,6 @@ export default NextAuth({
           throw new Error("No user found");
         }
 
-        // compare password with db password not using bcrypt
         if (user.password !== credentials?.password) {
           throw new Error("Invalid password");
         }

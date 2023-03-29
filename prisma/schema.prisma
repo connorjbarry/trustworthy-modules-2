@@ -67,3 +67,20 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+
+model IndivPkg {
+    id                   String   @id @default(cuid())
+    name                 String
+    version              String?
+    author               String?
+    githubLink           String?
+    rampUp               Decimal? @default(0)
+    correctness          Decimal? @default(0)
+    licenseCompatability Decimal? @default(0)
+    busFactor            Decimal? @default(0)
+    responsiveness       Decimal? @default(0)
+    fractionDependencies Decimal? @default(0)
+    fractionReviewed     Decimal? @default(0)
+    totalScore           Decimal? @default(0)
+    fileURL              String?
+}
