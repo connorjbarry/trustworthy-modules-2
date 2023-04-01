@@ -83,4 +83,24 @@ export const packageRouter = createTRPCRouter({
       }
       return pkg;
     }),
+  deleteOne: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const pkg = await ctx.prisma.indivPkg.delete({
+        where: {
+          id: input.id,
+        },
+      });
+      if (!pkg) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "There is no package with the given id",
+        });
+      }
+      return pkg;
+    }),
 });

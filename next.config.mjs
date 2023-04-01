@@ -20,5 +20,25 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  async rewrites() {
+    return [
+      {
+        source: "/packages/:path*",
+        destination: "/api/packages/:path*",
+      },
+      {
+        source: "/package/:path*",
+        destination: "/api/package/:path*",
+      },
+      {
+        source: "/reset",
+        destination: "/api/reset",
+      },
+      {
+        source: "/authenticate",
+        destination: "/api/authenticate",
+      },
+    ];
+  },
 };
 export default config;

@@ -34,7 +34,7 @@ const MetricsTable = ({ pkg }: { pkg: IndivPkg | undefined }) => {
             )
               return (
                 <>
-                  <tr className=" bg-gray-800">
+                  <tr className="">
                     <th
                       scope="row"
                       className="whitespace-nowrap px-6 py-4 font-medium uppercase"
