@@ -23,7 +23,7 @@ const Button = ({
     [ButtonVariant.Primary]:
       "bg-blue-700 hover:bg-blue-800 focus:ring-blue-300",
     [ButtonVariant.Success]:
-      "bg-purple-700 hover:bg-green-800 focus:ring-green-300",
+      "bg-green-700 hover:bg-green-800 focus:ring-green-300",
     [ButtonVariant.Danger]: "bg-red-600 hover:bg-red-700 focus:ring-red-300",
     [ButtonVariant.Warning]:
       "bg-yellow-700 hover:bg-yellow-800 focus:ring-yellow-300",

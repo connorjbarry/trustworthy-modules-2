@@ -1,9 +1,30 @@
 import { type IndivPkg } from "@prisma/client";
+import type {
+  QueryObserverResult,
+  RefetchOptions,
+  RefetchQueryFilters,
+} from "@tanstack/react-query";
 import Link from "next/link";
 import React from "react";
+import { api } from "../../utils/api";
 import { Button, ButtonVariant } from "../Button/Button";
+import LoadingSpinner, { LoadingColor } from "../LoadingSpinner";
 
-const PackagesTable = ({ pkgs }: { pkgs: IndivPkg[] }) => {
+const PackagesTable = ({
+  pkgs,
+  refetch,
+}: {
+  pkgs: IndivPkg[];
+  refetch: <TPageData>(
+    options?: RefetchOptions & RefetchQueryFilters<TPageData>
+  ) => Promise<QueryObserverResult<unknown, unknown>>;
+}) => {
+  const { mutate, isLoading } = api.packages.deleteOne.useMutation({
+    onSuccess: async () => {
+      await refetch();
+    },
+  });
+
   if (pkgs.length === 0)
     return (
       <div className="mt-6 flex items-center justify-center uppercase">
@@ -12,7 +33,7 @@ const PackagesTable = ({ pkgs }: { pkgs: IndivPkg[] }) => {
     );
   return (
     <div className="relative overflow-x-auto rounded-md">
-      <table className="w-full text-left text-sm text-gray-400">
+      <table className="w-full text-sm text-gray-400">
         <thead className="bg-gray-700 text-xs uppercase text-gray-400">
           <tr>
             {Object.keys(pkgs[0] as unknown as string[]).map((key) => {
@@ -31,7 +52,7 @@ const PackagesTable = ({ pkgs }: { pkgs: IndivPkg[] }) => {
               }
             })}
             <th scope="col" className="px-6 py-3">
-              Download
+              Options
             </th>
           </tr>
         </thead>
@@ -54,7 +75,7 @@ const PackagesTable = ({ pkgs }: { pkgs: IndivPkg[] }) => {
                       >
                         {pkgInfo === "name" ? (
                           <Link
-                            href={`packages/${pkg["id"]}`}
+                            href={`find-package/${pkg["id"]}`}
                             className="hover:text-blue-500 hover:underline"
                           >
                             {pkg[pkgInfo]}
@@ -67,8 +88,22 @@ const PackagesTable = ({ pkgs }: { pkgs: IndivPkg[] }) => {
                       </th>
                     );
                 })}
-                <td className="py-4 pl-6">
-                  <Button variant={ButtonVariant.Primary}>Download</Button>
+                <td className="flex justify-center space-x-8 py-4 pl-6">
+                  {isLoading ? (
+                    <LoadingSpinner variant={LoadingColor.Primary} />
+                  ) : (
+                    <>
+                      <Button variant={ButtonVariant.Primary}>Download</Button>
+                      <Button
+                        variant={ButtonVariant.Danger}
+                        onClick={() => {
+                          mutate({ id: pkg["id"] });
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </>
+                  )}
                 </td>
               </tr>
             );

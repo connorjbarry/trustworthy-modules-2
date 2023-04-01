@@ -1,14 +1,19 @@
 import { useRouter } from "next/router";
 import React from "react";
-import MetricsTable from "~/components/Table/MetricsTable";
-import { api } from "~/utils/api";
+import LoadingSpinner, { LoadingColor } from "~/components/LoadingSpinner";
+import MetricsTable from "../../components/Table/MetricsTable";
+import { api } from "../../utils/api";
 
 const IndvidualPackage = () => {
   const router = useRouter();
   const { id } = router.query;
   const pkg = api.packages.getOne.useQuery({ id: id as string });
   if (pkg.isLoading)
-    return <div className="flex items-center justify-center">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center">
+        <LoadingSpinner variant={LoadingColor.Primary} />
+      </div>
+    );
 
   return (
     <div className="grid grid-cols-3">
