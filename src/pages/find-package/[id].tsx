@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import LoadingSpinner, { LoadingColor } from "~/components/LoadingSpinner";
 import MetricsTable from "../../components/Table/MetricsTable";
+import ActionsTable from "../../components/Table/ActionsTable";
 import { api } from "../../utils/api";
 
 const IndvidualPackage = () => {
@@ -17,8 +18,9 @@ const IndvidualPackage = () => {
 
   return (
     <div className="grid grid-cols-3">
-      <div className="col-span-2 flex items-center justify-center">
-        {pkg.data?.name}
+      <div className="col-span-2 flex flex-col items-center justify-center">
+        <div className="text-5xl font-bold m-4 p-4">{pkg.data?.name}</div>
+        <ActionsTable pkgid={id as string} />
       </div>
       <div className="col-span-1 flex items-center justify-center p-4">
         <MetricsTable pkg={pkg.data} />
