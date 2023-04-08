@@ -51,21 +51,3 @@ jobs:
 
       - name: 🧪 Run Linting
         run: npm run lint --if-present
-
-  deploy:
-    name: Deploying to GCP
-    runs-on: ubuntu-latest
-      - name: Authenticate with GCP
-        uses: google-github-actions/setup-gcloud@master
-        with:
-          project_id: trustworthy-modules-2
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
-      - name: Deploy to App Engine
-        uses: google-github-actions/deploy-appengine@main
-        with:
-          project_id: trustworthy-modules-2
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          deploy_timeout: '600'
-          promote: true
-          version: ${{ github.sha }}
