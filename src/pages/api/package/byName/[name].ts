@@ -24,12 +24,6 @@ const nameHandler = (req: NextApiRequest, res: NextApiResponse) => {
     const { name } = req.query;
     const nameStr = name as string;
 
-    const token = req.headers.authorization as string;
-
-    console.log(req.headers.authorization)
-    console.log(req.headers['x-authorization'])
-    console.log(token)
-
     // if there is missing field(s) or missing authentification, return 404
     if (!nameStr) {
         res.status(400).json({ error: 'There is missing field(s) in the PackageName/AuthenticationToken or it is formed improperly.' });

@@ -4,15 +4,22 @@ import {TiDelete} from 'react-icons/ti'
 import {MdDownload} from 'react-icons/md'
 import {RxUpdate} from 'react-icons/rx'
 
+type ActionLog = {
+    id: string;
+    action: string;
+    username: string;
+    date: Date;
+}
+
 // take in the package id as a prop
 const ActionTables = (
     { pkgid }: { pkgid: string }
 ): JSX.Element => {
-      // get the action logs for the package
-  const actionLogs = api.packages.getActions.useQuery({ id: pkgid as string });
+// get the action logs for the package
+  const actionLogs = api.packages.getActions.useQuery({ id: pkgid}).data as ActionLog[];
     
   // map the action logs to list items
-  const actionLogItems = actionLogs.data?.map((actionLog) => (
+  const actionLogItems: JSX.Element[] = actionLogs.map((actionLog: ActionLog) => (
     <li className="pt-3 pb-0 sm:pt-4" key={actionLog.id}>
         <div className="flex items-center space-x-4">
             <div className="flex-shrink-0">

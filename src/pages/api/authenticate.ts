@@ -20,8 +20,6 @@ import Base64 from 'crypto-js/enc-base64';
 
 const authHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     const session = await getSession({ req });
-
-    console.log(session)
         
     if (session?.user) {
         // Signed in
