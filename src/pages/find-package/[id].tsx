@@ -18,12 +18,12 @@ const IndvidualPackage = () => {
     );
 
   return (
-    <div className="grid grid-cols-3">
-      <div className="col-span-2 flex flex-col items-center justify-center">
+    <div className="flex flex-col justify-center items-center md:grid md:grid-cols-3">
+      <div className="md:col-span-2 flex flex-col items-center justify-center">
         <div className="text-5xl font-bold m-4 p-4">{pkg.data?.name}</div>
         <ActionsTable pkgid={id as string} />
       </div>
-      <div className="col-span-1 flex items-center justify-center p-4">
+      <div className="w-3/4 sm:w-2/3 md:w-full md:col-span-1 flex items-center justify-center p-4">
         <MetricsTable pkg={pkg.data} />
       </div>
     </div>

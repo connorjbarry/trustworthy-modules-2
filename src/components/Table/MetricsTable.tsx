@@ -103,7 +103,7 @@ const MetricsTable = ({ pkg }: { pkg: IndivPkg | undefined }) => {
   if(!pkg) return <div className="flex items-center justify-center">There is no package found for this id</div>
 
   return (
-    <div className="flex flex-col w-1/2 text-gray-200">
+    <div className="flex flex-col w-3/4 xl:w-1/2 text-gray-200">
       <div className="text-lg font-bold bg-gray-700 p-2 rounded-sm">
         <div className="flex flex-row justify-between">
           <span>Metric</span>

@@ -3,23 +3,17 @@ import {RiAddCircleFill} from 'react-icons/ri'
 import {TiDelete} from 'react-icons/ti'
 import {MdDownload} from 'react-icons/md'
 import {RxUpdate} from 'react-icons/rx'
-
-type ActionLog = {
-    id: string;
-    action: string;
-    username: string;
-    date: Date;
-}
+import type { Action } from "@prisma/client"
 
 // take in the package id as a prop
 const ActionTables = (
     { pkgid }: { pkgid: string }
 ): JSX.Element => {
 // get the action logs for the package
-  const actionLogs = api.packages.getActions.useQuery({ id: pkgid}).data as ActionLog[];
+  const actionLogs = api.packages.getActions.useQuery({ id: pkgid}).data as Action[];
     
   // map the action logs to list items
-  const actionLogItems: JSX.Element[] = actionLogs.map((actionLog: ActionLog) => (
+  const actionLogItems: JSX.Element[]= actionLogs?.map((actionLog: Action) => (
     <li className="pt-3 pb-0 sm:pt-4" key={actionLog.id}>
         <div className="flex items-center space-x-4">
             <div className="flex-shrink-0">

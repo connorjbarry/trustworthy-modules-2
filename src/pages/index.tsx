@@ -40,7 +40,7 @@ const Home: NextPage = () => {
                   </div>
                   <div className="rounded-md shadow">
                     <Link
-                      href="/find-packages"
+                      href="/find-package"
                       className="flex w-full items-center justify-center rounded-md bg-blue-600 px-6 py-3 text-base font-medium hover:bg-blue-700"
                     >
                       Find Packages
