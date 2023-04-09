@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '../../../../server/db';
 import type { IndivPkg } from '@prisma/client';
-// import authMiddleware from '../../../../middleware/authMiddleware';
+import authMiddleware from '../../../../middleware/authMiddleware';
 
 /*
 * Regex handler for the /package/byRegex/[regex] API endpoint.
@@ -52,5 +52,5 @@ const regexHandler = (req: NextApiRequest, res: NextApiResponse) => {
     });
 };
 
-// export default authMiddleware(regexHandler);
-export default regexHandler;
+export default authMiddleware(regexHandler);
+// export default regexHandler;
