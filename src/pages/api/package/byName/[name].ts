@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '../../../../server/db';
 import type { IndivPkg } from '@prisma/client';
-// import authMiddleware from '../../../../middleware/authMiddleware';
+import authMiddleware from '../../../../middleware/authMiddleware';
 
 /*
 * Name handler for the /package/byName/[name] API endpoint.
@@ -23,6 +23,12 @@ import type { IndivPkg } from '@prisma/client';
 const nameHandler = (req: NextApiRequest, res: NextApiResponse) => {
     const { name } = req.query;
     const nameStr = name as string;
+
+    const token = req.headers.authorization as string;
+
+    console.log(req.headers.authorization)
+    console.log(req.headers['x-authorization'])
+    console.log(token)
 
     // if there is missing field(s) or missing authentification, return 404
     if (!nameStr) {
@@ -98,5 +104,5 @@ const nameHandler = (req: NextApiRequest, res: NextApiResponse) => {
     });
 };
 
-// export default authMiddleware(nameHandler); for authenticate user
-export default nameHandler;
+export default authMiddleware(nameHandler);
+// export default nameHandler;

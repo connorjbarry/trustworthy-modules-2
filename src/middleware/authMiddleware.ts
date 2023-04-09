@@ -8,7 +8,12 @@ import { prisma } from '../server/db';
 
 const authMiddleware = (handler: (req: NextApiRequest, res: NextApiResponse) => void) => {
     return async (req: NextApiRequest, res: NextApiResponse) => {
-        const token = req.headers['X-Authorization'] as string;
+        let token = req.headers['x-authorization'] as string;
+        if(!token){
+            token = req.headers.authorization as string;
+            // remove the "Bearer " part from the token
+            token = token.substring(7);
+        }
 
         // search for the user with the given apiKey
         const user = await prisma.user.findUnique({

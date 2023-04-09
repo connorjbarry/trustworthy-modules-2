@@ -23,21 +23,21 @@ const authHandler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     console.log(session)
         
-    if (session) {
+    if (session?.user) {
         // Signed in
-        if(session.user.id){
+        if(session.user.email){
             const user = await prisma.user.findUnique({
                 where: {
-                    id: session.user.id
+                    email: session.user.email
                 },
             });
             if(user && user.role === "ADMIN"){
                 // if the user apiKey is not set, set it to a random string
                 if(!user.apiKey){
-                    const apiKey = Base64.stringify(sha256(Math.random().toString()));
+                    const apiKey = Base64.stringify(sha256(session.user.email));
                     await prisma.user.update({
                         where: {
-                            id: session.user.id
+                            email: session.user.email
                         },
                         data: {
                             apiKey: apiKey

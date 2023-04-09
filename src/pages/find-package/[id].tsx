@@ -8,7 +8,8 @@ import { api } from "../../utils/api";
 const IndvidualPackage = () => {
   const router = useRouter();
   const { id } = router.query;
-  const pkg = api.packages.getOne.useQuery({ id: id as string });
+  const pkgid = id as string;
+  const pkg = api.packages.getOne.useQuery({ id: pkgid});
   if (pkg.isLoading)
     return (
       <div className="flex items-center justify-center">
