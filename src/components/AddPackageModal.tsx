@@ -35,11 +35,11 @@ const AddPackageModal = ({
     file: "",
   });
 
-  const { mutate } = api.packages.createPackage.useMutation({
-    onSuccess: async () => {
-      await refetch();
-    },
-  });
+  // const { mutate } = api.packages.createPackage.useMutation({
+  //   onSuccess: async () => {
+  //     await refetch();
+  //   },
+  // });
 
   const fileToBase64 = (file: File | undefined) =>
     new Promise((resolve, reject) => {

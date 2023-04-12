@@ -55,9 +55,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return;
     }
 
-    const updatedPkg = req.body;
-    return res.status(200).json({ message: updatedPkg });
-
     // TODO: NEED TO FIGURE OUT WHAT PARAMS CAN BE UPDATED
 
     res.status(200).json({ message: "Version is updated." });
