@@ -41,7 +41,28 @@ const AddPackageModal = ({
     },
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const fileToBase64 = (file: File | undefined) =>
+    new Promise((resolve, reject) => {
+      if (!file) {
+        reject("No file");
+      }
+      const reader = new FileReader();
+      reader.readAsDataURL(file as File);
+      reader.onload = () => {
+        resolve(reader.result);
+      };
+      reader.onerror = (error) => reject(error);
+    });
+
+  const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.name === "file" && e.target.files) {
+      const base64encoded = await fileToBase64(e.target.files[0]);
+      setPackageInfo({
+        ...packageInfo,
+        [e.target.name]: base64encoded as string,
+      });
+      return;
+    }
     setPackageInfo({
       ...packageInfo,
       [e.target.name]: e.target.value,
@@ -50,7 +71,11 @@ const AddPackageModal = ({
 
   const handlePackageUpload = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    mutate(packageInfo);
+    if (!packageInfo.url && packageInfo.name && packageInfo.author) {
+      packageInfo.url = `https://github.com/${packageInfo.author}/${packageInfo.name}`;
+    }
+    console.log(packageInfo);
+    // mutate(packageInfo);
     setShowModal(false);
   };
 
@@ -96,6 +121,40 @@ const AddPackageModal = ({
               </div>
               <div>
                 <label
+                  htmlFor="author"
+                  className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Author <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="author"
+                  id="author"
+                  onChange={handleInputChange}
+                  placeholder="ExpressJS"
+                  className="block w-full rounded-lg border border-gray-500 bg-gray-600 p-2.5 text-sm text-white placeholder-gray-400"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="version"
+                  className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Version <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="version"
+                  id="version"
+                  onChange={handleInputChange}
+                  placeholder="1.x.x"
+                  className="block w-full rounded-lg border border-gray-500 bg-gray-600 p-2.5 text-sm text-white placeholder-gray-400"
+                  required
+                />
+              </div>
+              <div>
+                <label
                   htmlFor="url"
                   className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
                 >
@@ -112,47 +171,15 @@ const AddPackageModal = ({
               </div>
               <div>
                 <label
-                  htmlFor="author"
-                  className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Author
-                </label>
-                <input
-                  type="text"
-                  name="author"
-                  id="author"
-                  onChange={handleInputChange}
-                  placeholder="ExpressJS"
-                  className="block w-full rounded-lg border border-gray-500 bg-gray-600 p-2.5 text-sm text-white placeholder-gray-400"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="version"
-                  className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Version
-                </label>
-                <input
-                  type="text"
-                  name="version"
-                  id="version"
-                  onChange={handleInputChange}
-                  placeholder="1.x.x"
-                  className="block w-full rounded-lg border border-gray-500 bg-gray-600 p-2.5 text-sm text-white placeholder-gray-400"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="upload"
+                  htmlFor="file"
                   className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Upload Package <span className="text-red-400">*</span>
                 </label>
                 <input
                   type="file"
-                  name="upload"
-                  id="upload"
+                  name="file"
+                  id="file"
                   onChange={handleInputChange}
                   className="block w-full rounded-lg border border-gray-500 bg-gray-600 p-2.5 text-sm text-white placeholder-gray-400"
                 />
