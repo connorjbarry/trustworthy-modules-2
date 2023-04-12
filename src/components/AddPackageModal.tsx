@@ -113,7 +113,7 @@ const AddPackageModal = ({
                   type="text"
                   name="name"
                   id="name"
-                  onChange={handleInputChange}
+                  onChange={void handleInputChange}
                   className="block w-full rounded-lg border border-gray-500 bg-gray-600 p-2.5 text-sm text-white placeholder-gray-400"
                   placeholder="Express"
                   required
@@ -130,7 +130,7 @@ const AddPackageModal = ({
                   type="text"
                   name="author"
                   id="author"
-                  onChange={handleInputChange}
+                  onChange={void handleInputChange}
                   placeholder="ExpressJS"
                   className="block w-full rounded-lg border border-gray-500 bg-gray-600 p-2.5 text-sm text-white placeholder-gray-400"
                   required
@@ -147,7 +147,7 @@ const AddPackageModal = ({
                   type="text"
                   name="version"
                   id="version"
-                  onChange={handleInputChange}
+                  onChange={void handleInputChange}
                   placeholder="1.x.x"
                   className="block w-full rounded-lg border border-gray-500 bg-gray-600 p-2.5 text-sm text-white placeholder-gray-400"
                   required
@@ -164,7 +164,7 @@ const AddPackageModal = ({
                   type="text"
                   name="url"
                   id="url"
-                  onChange={handleInputChange}
+                  onChange={void handleInputChange}
                   placeholder="https://github.com/expressjs/express"
                   className="block w-full rounded-lg border border-gray-500 bg-gray-600 p-2.5 text-sm text-white placeholder-gray-400"
                 />
