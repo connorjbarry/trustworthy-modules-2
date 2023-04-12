@@ -180,7 +180,7 @@ const AddPackageModal = ({
                   type="file"
                   name="file"
                   id="file"
-                  onChange={handleInputChange}
+                  onChange={void handleInputChange}
                   className="block w-full rounded-lg border border-gray-500 bg-gray-600 p-2.5 text-sm text-white placeholder-gray-400"
                 />
               </div>
