@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { GrFormClose } from "react-icons/gr";
 import { Button, ButtonVariant } from "./Button/Button";
-import { api } from "../utils/api";
+// import { api } from "../utils/api";
 import type {
   QueryObserverResult,
   RefetchOptions,
@@ -20,8 +20,8 @@ type PackageInfo = {
 
 const AddPackageModal = ({
   setShowModal,
-  refetch,
-}: {
+}: // refetch,
+{
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   refetch: <TPageData>(
     options?: RefetchOptions & RefetchQueryFilters<TPageData>
