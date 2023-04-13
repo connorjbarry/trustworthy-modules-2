@@ -1,4 +1,3 @@
-import { useSession } from "next-auth/react";
 import { api } from "~/utils/api";
 import type { User } from "@prisma/client";
 import { useState } from "react";
@@ -79,25 +78,8 @@ const UserRow = (user: User): JSX.Element => {
 };
 
 const UserList = (): JSX.Element => {
-  const { data: session, status } = useSession();
-
-  // check if user is unauthenticated
-  if (status !== "authenticated") {
-    return <div></div>;
-  }
-
   // if the user role is admin, get the list of all users
   const users = api.user.getAllUsers.useQuery().data;
-
-  // query to get the current user
-  const currentUser = api.user.getCurrentUser.useQuery({
-    email: session?.user?.email,
-  });
-
-  // if user is not an admin, return only the user's information
-  if (currentUser?.data?.role !== "ADMIN") {
-    return <div></div>;
-  }
 
   const userRows = users?.map((user) => <UserRow key={user.id} {...user} />);
 
