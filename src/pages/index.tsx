@@ -8,8 +8,6 @@ import Link from "next/link";
 // TODO: add footer w names, proj desc,
 
 const Home: NextPage = () => {
-  // const { data: session, status } = useSession();
-
   return (
     <>
       <Head>
@@ -42,7 +40,7 @@ const Home: NextPage = () => {
                   </div>
                   <div className="rounded-md shadow">
                     <Link
-                      href="/packages"
+                      href="/find-package"
                       className="flex w-full items-center justify-center rounded-md bg-blue-600 px-6 py-3 text-base font-medium hover:bg-blue-700"
                     >
                       Find Packages

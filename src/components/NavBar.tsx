@@ -26,10 +26,10 @@ const NavBar = () => {
                 Home
               </li>
             </Link>
-            <Link href="/packages" data-testid="nav-link">
+            <Link href="/find-package" data-testid="nav-link">
               <li
                 className={`ml-10 text-sm uppercase hover:underline ${
-                  router.asPath === "/packages" ? "text-blue-600" : ""
+                  router.asPath === "/find-package" ? "text-blue-600" : ""
                 }`}
               >
                 Packages
@@ -42,6 +42,15 @@ const NavBar = () => {
                 }`}
               >
                 About
+              </li>
+            </Link>
+            <Link href="/docs" data-testid="nav-link">
+              <li
+                className={`ml-10 text-sm uppercase hover:underline ${
+                  router.asPath === "/docs" ? "text-blue-600" : ""
+                }`}
+              >
+                Docs
               </li>
             </Link>
             <Link href="/account" data-testid="nav-link">

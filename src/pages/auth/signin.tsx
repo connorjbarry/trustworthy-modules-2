@@ -67,7 +67,7 @@ export default function SignIn(
             void signIn(provider.id, {
               callbackUrl: `${
                 process.env.NEXTAUTH_URL ?? window.location.origin
-              }`,
+              }/account`,
             })
           }
           className={`flex w-2/3 flex-row items-center justify-evenly rounded-2xl transition duration-150 hover:shadow-lg hover:shadow-slate-500/50 ${
@@ -108,7 +108,7 @@ export default function SignIn(
               void signIn("credentials", {
                 callbackUrl: `${
                   process.env.NEXTAUTH_URL ?? window.location.origin
-                }`,
+                }/account`,
                 redirect: true,
                 credentials: signInCredentials.credential,
                 password: signInCredentials.password,

@@ -6,6 +6,7 @@ import AddPackageModal from "../../components/AddPackageModal";
 import PackagesTable from "../../components/Table/PackagesTable";
 import { api } from "../../utils/api";
 import { type IndivPkg } from "@prisma/client";
+import LoadingSpinner, { LoadingColor } from "../../components/LoadingSpinner";
 // import { useSession } from "next-auth/react";
 
 const Packages = () => {
@@ -15,8 +16,13 @@ const Packages = () => {
   let filteredPkgs: any;
 
   const { data, isLoading, refetch } = api.packages.getAll.useQuery();
+
   if (isLoading)
-    return <div className="flex items-center justify-center">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center">
+        <LoadingSpinner variant={LoadingColor.Primary} />
+      </div>
+    );
   if (searchInput !== "") {
     filteredPkgs =
       data?.filter(
@@ -38,7 +44,7 @@ const Packages = () => {
           <SearchBar input={searchInput} setInput={setSearchInput} />
         </div>
         <Button
-          variant={ButtonVariant.Danger}
+          variant={ButtonVariant.Success}
           className={`mr-2 h-full min-w-max`}
           data-testid="add-package-btn"
           onClick={() => setShowAddPackageModal(true)}
@@ -57,9 +63,9 @@ const Packages = () => {
       <div className="mt-6 p-4">
         {data && data !== null ? (
           filteredPkgs && filteredPkgs !== null ? (
-            <PackagesTable pkgs={filteredPkgs as IndivPkg[]} />
+            <PackagesTable pkgs={filteredPkgs as IndivPkg[]} refetch={refetch}/>
           ) : (
-            <PackagesTable pkgs={data} />
+            <PackagesTable pkgs={data} refetch={refetch}/>
           )
         ) : (
           <div className="mt-6 flex items-center justify-center">

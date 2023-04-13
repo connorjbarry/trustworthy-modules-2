@@ -64,8 +64,6 @@ def calculate_pinned_dependency_fraction(repo_url, token):
 if __name__ == "__main__":
     # Example usage:
     repo_url = sys.argv[1]
-    json_file = sys.argv[2]
     if (vu.valid_url(repo_url)):
         metric = calculate_pinned_dependency_fraction(repo_url, GITHUB_TOKEN)
-        with open(json_file, "w") as f:
-            json.dump(metric, f, indent=4)
+        print(metric)
