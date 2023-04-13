@@ -21,34 +21,34 @@ const regexHandler = (req: NextApiRequest, res: NextApiResponse) => {
         return;
     }
 
-    console.log("regex: " + regexString)
+    console.log("regex: " + regexString);
 
-    // search for packages that match the regex
-    prisma.indivPkg.findMany({
-        where: {
-            name: {
-                contains: regexString,
-                mode: 'insensitive'
-            }
-        }
-    }).then((indivPkgs: IndivPkg[]) => {
+    // use query raw to search for packages that match the regex
+    (async () => {
+        const indivPkgs = await prisma.$queryRaw<IndivPkg[]>`
+            SELECT * FROM "IndivPkg"
+            WHERE name ~ ${regexString}
+        `;
+
         // if no packages match the regex, return an empty array and 404
-        if (indivPkgs.length === 0) {
-            res.status(404).json([]);
-        } else {
-            /* if the regex matches at least one package, 
-            * map the results to a new array and return it with the format specified above
-            */
-            const results = indivPkgs.map((indivPkg: IndivPkg) => {
-                return {
-                    Version: indivPkg.version,
-                    Name: indivPkg.name
-                }
-            });
-            res.status(200).json(results);
+        if (!indivPkgs) {
+            res.status(404).json({ error: 'No packages match the regex.' });
+            return;
         }
-    }).catch((err: Error) => {
-        res.status(500).json(err);
+
+        // for all packages that match the regex, return the name and version
+        const res_pkgs = indivPkgs.map((indivPkg) => {
+            return {
+                Version: indivPkg.version,
+                Name: indivPkg.name,
+            };
+        });
+
+        // return the array of packages that match the regex
+        res.status(200).json(res_pkgs);
+    })().catch((e) => {
+        console.error(e);
+        res.status(500).json({ error: 'Internal server error.' });
     });
 };
 
