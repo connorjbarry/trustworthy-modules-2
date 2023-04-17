@@ -103,4 +103,23 @@ export const packageRouter = createTRPCRouter({
       }
       return pkg;
     }),
+  getActions: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    ).query(async ({ ctx, input }) => {
+      const actions = await ctx.prisma.action.findMany({
+        where: {
+          indivPkgId: input.id,
+        },
+      });
+      if (!actions) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "There is no package with the given id",
+        });
+      }
+      return actions;
+    }),
 });
