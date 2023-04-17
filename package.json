@@ -2,10 +2,15 @@
   "name": "trustworthy-modules-2",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "postinstall": "prisma generate",
+    "preinstall": "npm add -D prisma && npx prisma ",
+    "install": "npm install @prisma/client",
+    "postinstall": "npx prisma generate",
     "lint": "next lint",
     "start": "next start",
     "test": "cross-env NODE_ENV=development jest --transformIgnorePatterns 'node_modules/(?!jose|@panva|uuid|preact-render-to-string|preact)'",

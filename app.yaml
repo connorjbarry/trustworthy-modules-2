@@ -1,0 +1,13 @@
+runtime: nodejs14
+instance_class: F1
+automatic_scaling:
+  max_instances: 3
+
+env_variables:
+  DB_CONNECTION_STRING: "your-cloudsql-connection-string"
+
+env: flex
+entrypoint: npm start
+runtime_config:
+  nodejs:
+    install_node_args: "--ignore-verification-failure"

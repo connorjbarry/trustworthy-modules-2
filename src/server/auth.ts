@@ -46,7 +46,7 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         session.user.id = user.id;
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        session.user.role = user.role;
+        //session.user.role = user.role;
       }
       return session;
     },
