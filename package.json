@@ -27,7 +27,6 @@
     "@trpc/next": "^10.9.0",
     "@trpc/react-query": "^10.9.0",
     "@trpc/server": "^10.9.0",
-
     "crypto-js": "^4.1.1",
     "framer-motion": "^10.11.2",
     "jest-environment-jsdom": "^29.5.0",

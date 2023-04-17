@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import React, { useState } from "react";
 import { GrFormClose } from "react-icons/gr";
 import { Button, ButtonVariant } from "./Button/Button";
-// import { api } from "../utils/api";
+import { api } from "../utils/api";
 import type {
   QueryObserverResult,
   RefetchOptions,
@@ -12,16 +13,16 @@ import type {
 
 type PackageInfo = {
   name: string;
-  url: string;
+  link: string;
   author: string;
   version: string;
-  file: string;
+  fileUrl: string;
 };
 
 const AddPackageModal = ({
   setShowModal,
-}: // refetch,
-{
+  refetch,
+}: {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   refetch: <TPageData>(
     options?: RefetchOptions & RefetchQueryFilters<TPageData>
@@ -29,17 +30,17 @@ const AddPackageModal = ({
 }) => {
   const [packageInfo, setPackageInfo] = useState<PackageInfo>({
     name: "",
-    url: "",
+    link: "",
     author: "",
     version: "",
-    file: "",
+    fileUrl: "",
   });
 
-  // const { mutate } = api.packages.createPackage.useMutation({
-  //   onSuccess: async () => {
-  //     await refetch();
-  //   },
-  // });
+  const { mutate } = api.packages.createPackage.useMutation({
+    onSuccess: async () => {
+      await refetch();
+    },
+  });
 
   const fileToBase64 = (file: File | undefined) =>
     new Promise((resolve, reject) => {
@@ -55,7 +56,7 @@ const AddPackageModal = ({
     });
 
   const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.name === "file" && e.target.files) {
+    if (e.target.name === "fileUrl" && e.target.files) {
       const base64encoded = await fileToBase64(e.target.files[0]);
       setPackageInfo({
         ...packageInfo,
@@ -69,13 +70,19 @@ const AddPackageModal = ({
     });
   };
 
+  const setPackageUrl = () => {
+    if (packageInfo.author && packageInfo.name) {
+      setPackageInfo({
+        ...packageInfo,
+        link: `https://github.com/${packageInfo.author.toLowerCase()}/${packageInfo.name.toLowerCase()}`,
+      });
+    }
+  };
+
   const handlePackageUpload = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!packageInfo.url && packageInfo.name && packageInfo.author) {
-      packageInfo.url = `https://github.com/${packageInfo.author}/${packageInfo.name}`;
-    }
-    console.log(packageInfo);
-    // mutate(packageInfo);
+    // console.log(packageInfo);
+    mutate(packageInfo);
     setShowModal(false);
   };
 
@@ -100,7 +107,7 @@ const AddPackageModal = ({
             </h3>
             <form
               className="space-y-6"
-              onSubmit={(e) => void handlePackageUpload(e)}
+              onSubmit={(e) => handlePackageUpload(e)}
             >
               <div>
                 <label
@@ -113,7 +120,7 @@ const AddPackageModal = ({
                   type="text"
                   name="name"
                   id="name"
-                  onChange={void handleInputChange}
+                  onChange={handleInputChange}
                   className="block w-full rounded-lg border border-gray-500 bg-gray-600 p-2.5 text-sm text-white placeholder-gray-400"
                   placeholder="Express"
                   required
@@ -130,7 +137,7 @@ const AddPackageModal = ({
                   type="text"
                   name="author"
                   id="author"
-                  onChange={void handleInputChange}
+                  onChange={handleInputChange}
                   placeholder="ExpressJS"
                   className="block w-full rounded-lg border border-gray-500 bg-gray-600 p-2.5 text-sm text-white placeholder-gray-400"
                   required
@@ -147,7 +154,7 @@ const AddPackageModal = ({
                   type="text"
                   name="version"
                   id="version"
-                  onChange={void handleInputChange}
+                  onChange={handleInputChange}
                   placeholder="1.x.x"
                   className="block w-full rounded-lg border border-gray-500 bg-gray-600 p-2.5 text-sm text-white placeholder-gray-400"
                   required
@@ -164,7 +171,7 @@ const AddPackageModal = ({
                   type="text"
                   name="url"
                   id="url"
-                  onChange={void handleInputChange}
+                  onChange={handleInputChange}
                   placeholder="https://github.com/expressjs/express"
                   className="block w-full rounded-lg border border-gray-500 bg-gray-600 p-2.5 text-sm text-white placeholder-gray-400"
                 />
@@ -178,16 +185,18 @@ const AddPackageModal = ({
                 </label>
                 <input
                   type="file"
-                  name="file"
+                  name="fileUrl"
                   id="file"
-                  onChange={void handleInputChange}
+                  onChange={handleInputChange}
                   className="block w-full rounded-lg border border-gray-500 bg-gray-600 p-2.5 text-sm text-white placeholder-gray-400"
+                  required
                 />
               </div>
               <Button
                 variant={ButtonVariant.Primary}
                 type="submit"
                 className="w-full rounded-lg px-5 py-2.5 text-center text-sm font-medium focus:outline-none focus:ring-4"
+                onClick={setPackageUrl}
               >
                 Submit Package
               </Button>

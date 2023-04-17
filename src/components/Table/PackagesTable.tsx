@@ -73,7 +73,46 @@ const PackagesTable = ({
                         className="whitespace-nowrap px-6 py-4 font-medium"
                         key={idx}
                       >
-                        {pkgInfo === "name" ? (
+                        {pkgInfo === "name" || pkgInfo === "githubLink" ? (
+                          pkgInfo === "name" ? (
+                            <Link
+                              href={`find-package/${pkg["id"]}`}
+                              className="hover:text-blue-500 hover:underline"
+                            >
+                              {pkg[pkgInfo]}
+                            </Link>
+                          ) : (
+                            <Link
+                              href={`${pkg[pkgInfo] as string}`}
+                              className="hover:text-blue-500 hover:underline"
+                            >
+                              {pkg[pkgInfo]}
+                            </Link>
+                          )
+                        ) : pkg[pkgInfo] ? (
+                          pkg[pkgInfo]
+                        ) : (
+                          "N/A"
+                        )}
+
+                        {/* {pkgInfo === "name" && (
+                          <Link
+                            href={`find-package/${pkg["id"]}`}
+                            className="hover:text-blue-500 hover:underline"
+                          >
+                            {pkg[pkgInfo]}
+                          </Link>
+                        )}
+                        {pkgInfo === "githubLink" && (
+                          <Link
+                            href={`${pkg[pkgInfo] as string}`}
+                            className="hover:text-blue-500 hover:underline"
+                          >
+                            {pkg[pkgInfo]}
+                          </Link>
+                        )}
+                        {pkg[pkgInfo] ? pkg[pkgInfo] : "N/A"} */}
+                        {/* {pkgInfo === "name" ? (
                           <Link
                             href={`find-package/${pkg["id"]}`}
                             className="hover:text-blue-500 hover:underline"
@@ -84,7 +123,7 @@ const PackagesTable = ({
                           pkg[pkgInfo]
                         ) : (
                           "N/A"
-                        )}
+                        )} */}
                       </th>
                     );
                 })}
@@ -93,7 +132,16 @@ const PackagesTable = ({
                     <LoadingSpinner variant={LoadingColor.Primary} />
                   ) : (
                     <>
-                      <Button variant={ButtonVariant.Primary}>Download</Button>
+                      <a
+                        href={pkg["fileURL"] as string}
+                        download={`${pkg["name"]}.zip`}
+                        rel="noreferrer"
+                        target="_blank"
+                      >
+                        <Button variant={ButtonVariant.Primary}>
+                          Download
+                        </Button>
+                      </a>
                       <Button
                         variant={ButtonVariant.Danger}
                         onClick={() => {
