@@ -70,12 +70,12 @@ model VerificationToken {
 }
 
 model Action {
-    id          String   @id @default(cuid())
-    username    String   
-    date        DateTime @default(now())
-    action      String
-    indivPkgId  String
-    indivPkg    IndivPkg @relation(fields: [indivPkgId], references: [id])
+    id         String   @id @default(cuid())
+    username   String
+    date       DateTime @default(now())
+    action     String
+    indivPkgId String
+    indivPkg   IndivPkg @relation(fields: [indivPkgId], references: [id], onDelete: Cascade)
 }
 
 model IndivPkg {
@@ -93,5 +93,5 @@ model IndivPkg {
     fractionReviewed     Decimal? @default(0)
     totalScore           Decimal? @default(0)
     fileURL              String?
-    actions              Action[] 
+    actions              Action[]
 }
