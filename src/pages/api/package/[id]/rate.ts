@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "~/server/db";
+import authMiddleware from "../../../../middleware/authMiddleware";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const id = req.query.id;
@@ -33,4 +34,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   res.status(200).json({ rating: totalScore });
 };
 
-export default handler;
+export default authMiddleware(handler);
