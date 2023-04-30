@@ -2,6 +2,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { Button, ButtonVariant } from "../components/Button/Button";
 import { api } from "../utils/api";
 import UserList from "../components/UserList";
+import Head from "next/head";
 
 const Account = () => {
   const { data: session, status } = useSession();
@@ -11,7 +12,13 @@ const Account = () => {
   });
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-top">
+    <>
+      <Head>
+        <title>Account</title>
+        <meta name="description" content="Account page" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <div className="flex min-h-screen flex-col items-center justify-top">
       {isAuthed ? (
           <>
             <div className="flex flex-row justify-around items-center w-screen">
@@ -52,6 +59,7 @@ const Account = () => {
           </div>
         )}
     </div>
+    </>
   );
 };
 

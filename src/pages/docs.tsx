@@ -1,12 +1,34 @@
-import React from "react";
 import Head from "next/head";
+import { motion } from "framer-motion";
+import { useState } from "react";
+import ApiSpecs from "../components/ApiSpecs";
+import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
+import { TbPackage, TbPackages } from "react-icons/tb"
+import { IoLockClosed } from "react-icons/io5";
+import { RxReload } from "react-icons/rx";
+import { HiOutlineIdentification, HiChartBar } from "react-icons/hi";
+import { RiCodeSSlashFill } from "react-icons/ri";
+import { TiDocumentText } from "react-icons/ti";
 
 /*
  * Doc page
  * This will be the documentation page of the
  * usage of the app and our api.
+ * This will be a static page.
+ * The following is the structure of the api documentation:
+ * /packages
+ * /package
+ * /package/{id}
+ * /package/{id}/rate
+ * /package/byName/{name}
+ * /package/byRegEx/
+ * /authenticate
+ * /reset
  */
 const Doc = (): JSX.Element => {
+  // react state for package api expansion
+  const [collapsePackageApi, setCollapsePackageApi] = useState(false);
+
   return (
     <>
       <Head>
@@ -16,82 +38,95 @@ const Doc = (): JSX.Element => {
           content="Documentation for the usage of our app and api"
         />
         <meta name="keywords" content="documentation, api, usage, app" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="flex min-h-screen flex-col items-center justify-center">
-        <h1 className="text-8xl">Documentation</h1>
-        <p className="text-5xl">
-          Documentation for the usage of our app and api
-        </p>
+      <motion.main 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 1 }}
+        className="flex flex-col items-center justify-center"
+      >
+        <h1 className="text-4xl font-bold">Documentation 	&#128217;</h1>
         <div className="flex flex-row">
-          <div className="flex flex-col">
-            <h2>API</h2>
-            <div className="px-2">
-              <h3>download</h3>
-              <h3>upload</h3>
-              <h3>update</h3>
-              <h3>rate</h3>
-              <h3>search</h3>
-              <h3>fetch</h3>
-              <div className="px-2">
-                <h4>history</h4>
-                <h4>directory</h4>
-              </div>
+          <motion.div 
+            initial={{ x: -25 }}
+            animate={{ x: 0 }}
+            exit={{ x: -25 }}
+            transition={{ duration: 0.5 }}
+            className="hidden lg:flex flex-none flex-col w-64 p-2"
+          >
+            <h2 className="text-3xl font-bold text-center py-4">Links &#128279;</h2>
+            <div className="flex flex-row items-center justify-between hover:bg-slate-700 rounded-md p-2">
+              <TbPackages className="text-xl" />
+              <a href="#packages"><span className="font-bold hover:underline">Packages</span></a>
+              <span className="w-[20px]"></span>
             </div>
-            <h2>APP</h2>
-          </div>
-          <div className="flex flex-col">
-            <div>
-              <h2>API</h2>
-              <div className="px-2">
-                <h3>download</h3>
-                <div className="px-2">
-                  <p>
-                    <code>GET</code> <code>/api/download</code>
-                  </p>
-                  <p>
-                    This will download the file from the github repo. The file
-                    will be zipped.
-                  </p>
-                </div>
-                <h3>upload</h3>
-                <div className="px-2">
-                  <p>
-                    <code>POST</code> <code>/api/upload</code>
-                  </p>
-                </div>
-                <h3>update</h3>
-                <h3>rate</h3>
-                <div className="px-2">
-                  <p>
-                    <code>GET</code> <code>/api/rate</code>
-                  </p>
-                </div>
-                <h3>search</h3>
-                <div className="px-2">
-                  <p>
-                    <code>GET</code> <code>/api/search</code>
-                  </p>
-                </div>
-                <h3>fetch</h3>
-                <div className="px-2">
-                  <h4>history</h4>
-                  <div className="px-2">
-                    <p>
-                      <code>GET</code> <code>/api/fetch/history/[date]</code>
-                    </p>
-                  </div>
-                  <h4>directory</h4>
-                  <div className="px-2">
-                    <p>
-                      <code>GET</code> <code>/api/fetch/directory</code>
-                    </p>
-                  </div>
-                </div>
-              </div>
+            <div 
+              className="flex flex-row items-center justify-between hover:bg-slate-700 rounded-md p-2"  
+            >
+              <TbPackage className="text-xl" />
+              <a href="#package"><span className="font-bold hover:underline">Package</span></a>
+              {
+                collapsePackageApi ? (
+                  <MdKeyboardArrowUp
+                    className="text-xl hover:cursor-pointer"
+                    onClick={() => setCollapsePackageApi(false)}
+                  />
+                ) : (
+                  <MdKeyboardArrowDown
+                    className="text-xl hover:cursor-pointer"
+                    onClick={() => setCollapsePackageApi(true)}
+                  />
+                ) 
+              }
             </div>
-          </div>
+            {
+              collapsePackageApi && (
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="px-4"
+                >
+                  <div className="flex flex-row items-center justify-between p-2 hover:bg-slate-700 rounded-md">
+                    <HiOutlineIdentification className="text-xl" />
+                    <a href="#package-id" ><span className="font-bold hover:underline">id</span></a>
+                    <span className="w-[20px]"></span>
+                  </div>
+                  <div className="flex flex-row items-center justify-between p-2 hover:bg-slate-700 rounded-md">
+                    <HiChartBar className="text-xl" />
+                    <a href="#package-id-rate"><span className="font-bold hover:underline">rate</span></a>
+                    <span className="w-[20px]"></span>
+                  </div>
+                  <div className="flex flex-row items-center justify-between p-2 hover:bg-slate-700 rounded-md"> 
+                    <TiDocumentText className="text-xl" />
+                    <a href="#package-byName"><span className="font-bold hover:underline">byName</span></a>
+                    <span className="w-[20px]"></span>
+                  </div>
+                  <div className="flex flex-row items-center justify-between p-2 hover:bg-slate-700 rounded-md">
+                    <RiCodeSSlashFill className="text-xl" />
+                    <a href="#package-byRegEx"><span className="font-bold hover:underline">byRegEx</span></a>
+                    <span className="w-[20px]"></span>
+                  </div>
+                </motion.div>
+              )
+            }
+            <div className="flex flex-row items-center justify-between py-2 hover:bg-slate-700 rounded-md p-2">
+              <IoLockClosed className="text-xl" />
+              <a href="#authenticate"><span className="font-bold hover:underline">Authenticate</span></a>
+              <span className="w-[20px]"></span>
+            </div>
+            <div className="flex flex-row items-center justify-between py-2 hover:bg-slate-700 rounded-md p-2">
+              <RxReload className="text-xl" />
+              <a href="#reset"><span className="font-bold hover:underline">Reset</span></a>
+              <span className="w-[20px]"></span>
+            </div>
+          </motion.div>
+          <ApiSpecs />
         </div>
-      </main>
+      </motion.main>
     </>
   );
 };

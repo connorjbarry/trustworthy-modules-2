@@ -8,6 +8,7 @@ import { api } from "../../utils/api";
 import { type IndivPkg } from "@prisma/client";
 import LoadingSpinner, { LoadingColor } from "../../components/LoadingSpinner";
 import { useSession } from "next-auth/react";
+import Head from "next/head";
 
 const Packages = () => {
   const [searchInput, setSearchInput] = useState<string>("");
@@ -42,6 +43,11 @@ const Packages = () => {
 
   return (
     <>
+      <Head>
+        <title>Package</title>
+        <meta name="description" content="Find a Package" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <div
         className={`flex w-full items-center justify-between gap-4 ${
           showAddPackageModal ? "opacity-80" : ""

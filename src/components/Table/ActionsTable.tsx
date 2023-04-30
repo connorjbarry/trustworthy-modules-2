@@ -3,6 +3,7 @@ import {RiAddCircleFill} from 'react-icons/ri'
 import {TiDelete} from 'react-icons/ti'
 import {MdDownload} from 'react-icons/md'
 import {RxUpdate} from 'react-icons/rx'
+import { HiStar } from 'react-icons/hi'
 import type { Action } from "@prisma/client"
 
 // take in the package id as a prop
@@ -22,6 +23,7 @@ const ActionTables = (
                     actionLog.action === 'DELETE' ? <TiDelete className="w-6 h-6 text-red-500" /> :
                     actionLog.action === 'DOWNLOAD' ? <MdDownload className="w-6 h-6 text-blue-500" /> :
                     actionLog.action === 'UPDATE' ? <RxUpdate className="w-6 h-6 text-yellow-500" /> :
+                    actionLog.action === 'RATE' ? <HiStar className="w-6 h-6 text-[#f1f35f]" />:
                     <div></div>
                 }
             </div>
