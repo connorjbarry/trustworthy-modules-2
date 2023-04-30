@@ -83,7 +83,7 @@ model IndivPkg {
     name                 String   @unique
     version              String?
     author               String?
-    githubLink           String?
+    githubLink           String?  @unique
     rampUp               Decimal? @default(0)
     correctness          Decimal? @default(0)
     licenseCompatability Decimal? @default(0)
@@ -93,5 +93,6 @@ model IndivPkg {
     fractionReviewed     Decimal? @default(0)
     totalScore           Decimal? @default(0)
     fileURL              String?
+    JSProgram            String?
     actions              Action[]
 }
