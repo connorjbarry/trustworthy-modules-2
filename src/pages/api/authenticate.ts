@@ -6,6 +6,16 @@ import { getSession } from "next-auth/react";
 import sha256 from "crypto-js/sha256";
 import Base64 from "crypto-js/enc-base64";
 
+type AuthenticationRequest = {
+  User: {
+    name: string;
+    isAdmin: boolean;
+  };
+  Secret: {
+    password: string;
+  };
+}
+
 /*
  * Authentication handler for the /authenticate API endpoint.
  * this endpoint returns a token that can be used to authenticate the user with the following format:
@@ -57,21 +67,22 @@ const authHandler = async (req: NextApiRequest, res: NextApiResponse) => {
           "There is missing field(s) in the PackageRegEx/AuthenticationToken or it is formed improperly.",
       });
     }
-  } else if (req.method === "POST") {
+
+  } else if(req.method === "POST") {
     /* if not signed in, see if the user provided username and password
-     * the body should contain the following fields:
-     *  const authenticationRequest = {
-     *    "User": {
-     *      "name": <username>,
-     *      "isAdmin": true
-     *    },
-     *    "Secret": {
-     *      "password": <password>
-     *    }
-     *  };
-     */
+    * the body should contain the following fields:
+    *  const authenticationRequest = {
+    *    "User": {
+    *      "name": <username>,
+    *      "isAdmin": true
+    *    },
+    *    "Secret": {
+    *      "password": <password>
+    *    }
+    *  };
+    */
     // get the body of the request
-    const authenticationRequest = req.body;
+    const authenticationRequest = req.body as AuthenticationRequest;
 
     if (!authenticationRequest) {
       res.status(401).json({ error: "No username or password provided." });
@@ -79,14 +90,11 @@ const authHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     // if no username or password is provided, return 404
-    if (
-      !authenticationRequest.User.name ||
-      !authenticationRequest.Secret.password
-    ) {
+    if (!authenticationRequest.User.name || !authenticationRequest.Secret.password) {
       res.status(401).json({ error: "No username or password provided." });
       return;
     }
-
+    
     // with the username find the user in the database
     const user = await prisma.user.findUnique({
       where: {

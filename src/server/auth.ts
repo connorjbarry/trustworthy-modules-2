@@ -48,6 +48,7 @@ import authOptions from "../pages/api/auth/[...nextauth]"
  *
  * @see https://next-auth.js.org/configuration/options
  */
+
 // export const authOptions: NextAuthOptions = {
 //   callbacks: {
 //     session: async ({ session, user, token }) => {
