@@ -38,6 +38,7 @@ const Doc = (): JSX.Element => {
           content="Documentation for the usage of our app and api"
         />
         <meta name="keywords" content="documentation, api, usage, app" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
       <motion.main 
         initial={{ opacity: 0 }}

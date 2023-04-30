@@ -2,6 +2,10 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '../../../server/db';
 import type { IndivPkg } from '@prisma/client';
 
+type PackageRegExRequest = {
+    RegEx: string;
+}
+
 /*
 * Regex handler for the /package/byRegex/[regex] API endpoint.
 * this endpoint returns an array of packages that match the regex with the following format:
@@ -17,8 +21,8 @@ const regexHandler = (req: NextApiRequest, res: NextApiResponse) => {
     *  RegEx: <regex>,  
     * }
     */
-    const regex = req.body.RegEx;
-    const regexString = regex as string;
+    const regex = req.body as PackageRegExRequest;
+    const regexString = regex.RegEx;
 
     // if there is missing field(s) or missing authentification, return 400
     if (!regexString) {
