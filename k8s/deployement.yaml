@@ -17,6 +17,3 @@ spec:
         image: gcr.io/trustworthy-modules-2/my-app:latest
         ports:
         - containerPort: 3000
-        env:
-        - name: DATABASE_URL
-          value: postgresql://postgres:ECE461Team9!@db.kyxrgekzxsnthlsviune.supabase.co:5432/postgres
