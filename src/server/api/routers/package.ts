@@ -19,10 +19,10 @@ export const packageRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      // console.log(input);
+      const email = ctx.session?.user?.email as string;
       const user = await ctx.prisma.user.findUnique({
         where: {
-          email: ctx.session?.user?.email ?? "",
+          email: email,
         },
       });
       const individualPkg = await ctx.prisma.indivPkg.create({
@@ -34,7 +34,7 @@ export const packageRouter = createTRPCRouter({
           fileURL: input.fileUrl,
           actions: {
             create: {
-              username: user?.name ?? "",
+              username: user?.username ?? "",
               action: "CREATE",
             },
           },

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "../../server/db";
 import { getSession } from "next-auth/react";
@@ -65,6 +67,7 @@ const authHandler = async (req: NextApiRequest, res: NextApiResponse) => {
           "There is missing field(s) in the PackageRegEx/AuthenticationToken or it is formed improperly.",
       });
     }
+
   } else if(req.method === "POST") {
     /* if not signed in, see if the user provided username and password
     * the body should contain the following fields:
@@ -109,7 +112,7 @@ const authHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         res.status(401).json({ error: "Incorrect password." });
         return;
       }
-  
+
       // if the user apiKey is not set, set it to a random string
       if (!user.apiKey) {
         const apiKey = Base64.stringify(sha256(user.email as string));

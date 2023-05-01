@@ -1,5 +1,5 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '../server/db';
+import type { NextApiRequest, NextApiResponse } from "next";
+import { prisma } from "../server/db";
 
 /*
 * This file contains the middleware for the API endpoints.
