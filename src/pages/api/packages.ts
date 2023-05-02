@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import type { NextApiRequest, NextApiResponse } from "next";
 // import authMiddleware from "~/middleware/authMiddleware";
 import { prisma } from "~/server/db";
@@ -9,8 +10,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const offset: number = (req.query.offset ?? 0) as number;
+  const version = (req.body.version ?? "") as string;
+  const name = (req.body.name ?? "") as string;
 
   const body = await prisma.indivPkg.findMany({
+    where: {
+      name: name,
+      version: version,
+    },
     skip: 10 * offset,
     take: 10,
   });

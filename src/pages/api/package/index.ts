@@ -2,6 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 // import authMiddleware from "~/middleware/authMiddleware";
 import { prisma } from "~/server/db";
+import StreamZip from "node-stream-zip";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== "POST") {
@@ -19,7 +20,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const url = (req.body.url ?? "") as string;
   const jsProgram = (req.body.JSProgram ?? "") as string;
 
-  if (!content || !url || !jsProgram) {
+  console.log(content, url, jsProgram);
+
+  if ((!content || !url) && !jsProgram) {
     res.status(400).json({
       code: "400",
       message:
@@ -62,7 +65,26 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   const needsIngestion = url !== "";
 
-  const body = await prisma.indivPkg.findMany();
+  // if needsIngestion, we want to download the package as a zip from the provided url and convert to base64 string, store url and base64 string in db
+
+  // if (needsIngestion) {
+  //   await fetch(`${url}/archive/master.zip`)
+  //     .then((res) => res.blob())
+  //     .then((blob) => {
+  //       fileReader.readAsDataURL(blob);
+  //       console.log(fileReader.result);
+  //     });
+  // }
+
+  // after we determine if we need to ingest the package, we have a base64 representation of the zip file of the package, we now need to read into this and get the name, author, and version of the package from the package.json file
+
+  // const zip = new StreamZip({
+  //   file: content,
+  //   storeEntries: true,
+  // });
+  // console.log(zip);
+
+  // const body = await prisma.indivPkg.findMany();
 
   res.status(200);
 };

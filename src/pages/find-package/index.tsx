@@ -9,6 +9,7 @@ import { type IndivPkg } from "@prisma/client";
 import LoadingSpinner, { LoadingColor } from "../../components/LoadingSpinner";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
+import Link from "next/link";
 
 const Packages = () => {
   const [searchInput, setSearchInput] = useState<string>("");
@@ -22,6 +23,7 @@ const Packages = () => {
   });
 
   const isAdmin = currentUser?.data?.role === "ADMIN";
+  const isUser = currentUser?.data?.role === "USER";
 
   const { data, isLoading, refetch } = api.packages.getAll.useQuery();
 
@@ -39,6 +41,21 @@ const Packages = () => {
           pkg.author?.toLowerCase().includes(searchInput.toLowerCase())
       ) ?? null;
     if ((filteredPkgs as IndivPkg[]).length === 0) filteredPkgs = null;
+  }
+
+  if (!isUser && !isAdmin) {
+    return (
+      <div className="flex flex-col items-center justify-center">
+        <div className="text-2xl">You are not authorized to view this page</div>
+
+        <Link href="/api/auth/signin">
+          <span className="flex items-center justify-center">
+            <p className=" text-blue-400 underline">Sign in</p>
+            &nbsp;here
+          </span>
+        </Link>
+      </div>
+    );
   }
 
   return (
