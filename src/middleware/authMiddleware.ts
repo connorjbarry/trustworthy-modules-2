@@ -1,5 +1,5 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { prisma } from '../server/db';
+import type { NextApiRequest, NextApiResponse } from "next";
+import { prisma } from "../server/db";
 
 /*
 * This file contains the middleware for the API endpoints.
@@ -8,12 +8,23 @@ import { prisma } from '../server/db';
 
 const authMiddleware = (handler: (req: NextApiRequest, res: NextApiResponse) => void) => {
     return async (req: NextApiRequest, res: NextApiResponse) => {
-        let token = req.headers['x-authorization'] as string;
-        if(!token){
-            token = req.headers.authorization as string;
-            // remove the "Bearer " part from the token
-            token = token.substring(7);
+        let authToken = req.headers['x-authorization'] as string;
+        if(authToken && authToken.split(' ')[0]?.toLowerCase() == 'bearer'){
+            authToken = authToken.split(' ')[1] as string;
         }
+
+        let bearerToken = null;
+        if(!authToken){
+            bearerToken = req.headers.authorization as string;
+            // remove the "Bearer " part from the token
+        } 
+
+        if(!bearerToken && !authToken){
+            res.status(400).json({ error: 'The AuthenticationToken is missing.' });
+            return;
+        }
+
+        const token = authToken ? authToken : bearerToken ? bearerToken.split(' ')[1] : "";
 
         // search for the user with the given apiKey
         const user = await prisma.user.findUnique({
@@ -24,7 +35,7 @@ const authMiddleware = (handler: (req: NextApiRequest, res: NextApiResponse) => 
 
         // if the user is not found, return 401
         if (!user) {
-            res.status(401).json({ error: 'The AuthenticationToken is invalid.' });
+            res.status(400).json({ error: 'The AuthenticationToken is invalid.' });
             return;
         }
 

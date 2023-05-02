@@ -6,6 +6,7 @@ export enum ButtonVariant {
   Danger,
   Warning,
   Info,
+  Disabled,
 }
 
 const Button = ({
@@ -29,6 +30,7 @@ const Button = ({
       "bg-yellow-700 hover:bg-yellow-800 focus:ring-yellow-300",
     [ButtonVariant.Info]:
       "bg-purple-700 hover:bg-purple-800 focus:ring-purple-300",
+    [ButtonVariant.Disabled]: "bg-gray-700 focus:ring-gray-300",
   };
   return (
     <button

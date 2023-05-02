@@ -7,13 +7,21 @@ import PackagesTable from "../../components/Table/PackagesTable";
 import { api } from "../../utils/api";
 import { type IndivPkg } from "@prisma/client";
 import LoadingSpinner, { LoadingColor } from "../../components/LoadingSpinner";
-// import { useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import Head from "next/head";
 
 const Packages = () => {
   const [searchInput, setSearchInput] = useState<string>("");
   const [showAddPackageModal, setShowAddPackageModal] =
     useState<boolean>(false);
   let filteredPkgs: any;
+
+  const { data: session } = useSession();
+  const currentUser = api.user.getCurrentUser.useQuery({
+    email: session?.user?.email,
+  });
+
+  const isAdmin = currentUser?.data?.role === "ADMIN";
 
   const { data, isLoading, refetch } = api.packages.getAll.useQuery();
 
@@ -35,6 +43,11 @@ const Packages = () => {
 
   return (
     <>
+      <Head>
+        <title>Package</title>
+        <meta name="description" content="Find a Package" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <div
         className={`flex w-full items-center justify-between gap-4 ${
           showAddPackageModal ? "opacity-80" : ""
@@ -44,10 +57,11 @@ const Packages = () => {
           <SearchBar input={searchInput} setInput={setSearchInput} />
         </div>
         <Button
-          variant={ButtonVariant.Success}
+          variant={isAdmin ? ButtonVariant.Success : ButtonVariant.Disabled}
           className={`mr-2 h-full min-w-max`}
           data-testid="add-package-btn"
           onClick={() => setShowAddPackageModal(true)}
+          disabled={!isAdmin}
         >
           Add Package
         </Button>
@@ -60,12 +74,15 @@ const Packages = () => {
           />
         )}
       </div>
-      <div className="mt-6 p-4">
+      <div className={`mt-6 p-4 ${showAddPackageModal ? "hidden" : ""}`}>
         {data && data !== null ? (
           filteredPkgs && filteredPkgs !== null ? (
-            <PackagesTable pkgs={filteredPkgs as IndivPkg[]} refetch={refetch}/>
+            <PackagesTable
+              pkgs={filteredPkgs as IndivPkg[]}
+              refetch={refetch}
+            />
           ) : (
-            <PackagesTable pkgs={data} refetch={refetch}/>
+            <PackagesTable pkgs={data} refetch={refetch} />
           )
         ) : (
           <div className="mt-6 flex items-center justify-center">

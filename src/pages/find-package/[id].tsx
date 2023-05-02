@@ -1,9 +1,9 @@
 import { useRouter } from "next/router";
-import React from "react";
 import LoadingSpinner, { LoadingColor } from "~/components/LoadingSpinner";
 import MetricsTable from "../../components/Table/MetricsTable";
 import ActionsTable from "../../components/Table/ActionsTable";
 import { api } from "../../utils/api";
+import Head from "next/head";
 
 const IndvidualPackage = () => {
   const router = useRouter();
@@ -18,6 +18,12 @@ const IndvidualPackage = () => {
     );
 
   return (
+    <>
+    <Head>
+      <title>{pkg.data?.name ? pkg.data?.name : "Package"}</title>
+      <meta name="description" content="Find a Package" />
+      <link rel="icon" href="/favicon.ico" />
+    </Head>
     <div className="flex flex-col justify-center items-center md:grid md:grid-cols-3">
       <div className="md:col-span-2 flex flex-col items-center justify-center">
         <div className="text-5xl font-bold m-4 p-4">{pkg.data?.name}</div>
@@ -27,6 +33,7 @@ const IndvidualPackage = () => {
         <MetricsTable pkg={pkg.data} />
       </div>
     </div>
+    </>
   );
 };
 
