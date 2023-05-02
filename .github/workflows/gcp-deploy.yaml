@@ -1,0 +1,57 @@
+name: Deploy to GKE
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  PROJECT_ID: ${{ secrets.PROJECT_ID }}
+  GKE_CLUSTER: ${{ secrets.GKE_CLUSTER }}
+  GKE_ZONE: ${{ secrets.GKE_ZONE }}
+  DOCKER_IMAGE_NAME: priv-reg
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    
+    - name: Set up deployment variables
+      run: |
+           export GITHUB_SHA=${{ github.sha }}
+           envsubst < deployment_template.yaml > k8s/deployment.yaml
+
+    - name: 🛠️ Setup Node.js
+      uses: actions/setup-node@v2.1.5
+      with:
+        node-version: 16
+
+    - name: 🔧 Install npm@latest
+      run: npm i -g npm@latest
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v0.3.0
+      with:
+        project_id: ${{ env.PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        export_default_credentials: true
+
+    - name: Install gke-gcloud-auth-plugin
+      run: gcloud components install gke-gcloud-auth-plugin
+
+    - name: Configure Docker
+      run: |
+        gcloud auth configure-docker
+
+    - name: Build and push Docker image
+      run: |
+        docker build --build-arg WORKDIR=${{ github.workspace }} -t gcr.io/${{ env.PROJECT_ID }}/${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }} .
+        docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
+    
+    - name: Deploy to GKE
+      run: |
+        gcloud container clusters get-credentials ${{ env.GKE_CLUSTER }} --zone ${{ env.GKE_ZONE }}
+        kubectl apply -f k8s/
