@@ -60,9 +60,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
   }
 
-  const needsIngestion = url !== "";
+  // const needsIngestion = url !== "";
 
-  const body = await prisma.indivPkg.findMany();
+  // const body = await prisma.indivPkg.findMany();
 
   res.status(200);
 };
