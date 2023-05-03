@@ -2,13 +2,6 @@ import requests
 import re
 import json
 import sys
-import os
-from dotenv import load_dotenv
-import valid_url as vu
-
-load_dotenv()
-
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 
 def load_npm_package_json(npm_url):
     # Extract package name from npm URL
@@ -49,7 +42,7 @@ def calculate_pinned_dependency_fraction(repo_url, token):
     
     pinned_count = 0
     total_count = 0
-    print(data.get('dependencies', {}))
+    #print(data.get('dependencies', {}))
     for dependency in data.get('dependencies', {}):
         version_range = data['dependencies'][dependency]
         if re.match(r"^[~^]?[\d]+\.[\d]+(\.[\d]+)?(-[\w\d]+(\.[\w\d]+)?)?$", version_range):
@@ -59,11 +52,8 @@ def calculate_pinned_dependency_fraction(repo_url, token):
     if total_count == 0:
         return 1.0
     
-    return pinned_count / total_count
+    return round(pinned_count / total_count, 2)
 
 if __name__ == "__main__":
-    # Example usage:
-    repo_url = sys.argv[1]
-    if (vu.valid_url(repo_url)):
-        metric = calculate_pinned_dependency_fraction(repo_url, GITHUB_TOKEN)
-        print(metric)
+    metric = calculate_pinned_dependency_fraction(sys.argv[1], sys.argv[2])
+    print(metric)
