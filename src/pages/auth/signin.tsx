@@ -66,7 +66,7 @@ export default function SignIn(
         <button
           onClick={() =>
             void signIn(provider.id, {
-              callbackUrl: `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/account`,
+              callbackUrl: `http://34.173.150.160/account`,
             })
           }
           className={`flex w-2/3 flex-row items-center justify-evenly rounded-2xl transition duration-150 hover:shadow-lg hover:shadow-slate-500/50 ${
@@ -105,7 +105,8 @@ export default function SignIn(
             onSubmit={(e) => {
               e.preventDefault();
               void signIn("credentials", {
-                callbackUrl: `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/account`,
+                // ${process.env.NEXT_PUBLIC_NEXTAUTH_URL}
+                callbackUrl: `http://34.173.150.160/account`,
                 redirect: true,
                 credentials: signInCredentials.credential,
                 password: signInCredentials.password,
