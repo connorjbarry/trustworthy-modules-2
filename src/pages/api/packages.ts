@@ -5,7 +5,7 @@ import authMiddleware from "~/middleware/authMiddleware";
 import { prisma } from "~/server/db";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method !== "GET") {
+  if (req.method !== "POST") {
     res.status(405).json({ error: "Method not allowed" });
     return;
   }
@@ -22,7 +22,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     skip: 10 * offset,
     take: 10,
   });
-
+  console.log(req);
   res.status(200).json(body);
 };
 
