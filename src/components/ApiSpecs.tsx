@@ -351,14 +351,14 @@ const ApiSpecs = (): JSX.Element => {
             <code>
               {`
 {
-  "BusFactor": 0,
-  "Correctness": 0,
-  "RampUp": 0,
-  "ResponsiveMaintainer": 0,
-  "LicenseScore": 0,
-  "GoodPinningPractice": 0,
-  "PullRequest": 0,
-  "NetScore": 0
+  "BusFactor": 0.75,
+  "Correctness": 0.76,
+  "RampUp": 1,
+  "ResponsiveMaintainer": 0.875,
+  "LicenseScore": 1,
+  "GoodPinningPractice": 0.02,
+  "PullRequest": 1,
+  "NetScore": 0.7
 }
                 `}
             </code>

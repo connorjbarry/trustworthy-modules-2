@@ -1,5 +1,5 @@
 //import {spawn} from "child_process";
-import { spawnSync } from "child_process";
+import { execSync } from "child_process";
 //import {axios} from "axios";
 import axios from "axios";
 const regex = /\/([\w-]+)\/([\w-]+)/i;
@@ -33,14 +33,21 @@ async function npmToGit(repo) {
 
 /**
  * @param {string} repo_url
+ * return { ingestible: true, bus_factor, license, ramp_up, responsiveness, correctness, dependency_score, pull_req_score };
  */
 async function childProcess(repo_url) {
   const token = process.env.GITHUB_TOKEN; // gets GITHUB token
+
   if (!token) {
     console.error("GitHub token not found in the environment. Please set the GITHUB_TOKEN environment variable.");
     process.exit(1);
   }  
   let owner, repo, url_parts;
+
+  // check if url continas github or npmjs
+  if(repo_url.toLowerCase().includes('github') || repo_url.toLowerCase().includes('npmjs')) {
+    console.log('Repo URL is valid');
+  }
 
   //if npmjs repo, change to github repo
   if (repo_url.toLowerCase().includes('github')) {
@@ -58,70 +65,90 @@ async function childProcess(repo_url) {
     console.error('Unsupported repository URL: ' + repo_url);
   }
 
-  // Calculates bus factor metric
-  const bf_result = spawnSync("python", ["bus_factor.py", owner, repo, token]);
-  let bus_factor = parseFloat(bf_result.stdout.toString()) || 0;
+  // Calculates bus factor metric and wait for it to finish
+  let bus_factor = 0;
+  const bf_result = execSync(`python3 metrics/bus_factor.py ${owner} ${repo} ${token}`);
+  bus_factor = parseFloat(bf_result.toString()) || 0;
+  console.log("bus_factor: ", bus_factor)
   if (bus_factor < 0.5) {
     console.error(`Not ingestible due to low bus_factor: ${bus_factor}`);
-    return { ingestible: false, dependency_score: 0, pull_req_score: 0 };
+    return { ingestible: false, bus_factor, license: 0, ramp_up: 0, responsiveness: 0, correctness: 0, dependency_score: 0, pull_req_score: 0 };
   }
 
   // Calculates license metric
-  const lic_result = spawnSync("python", ["license.py", owner, repo, token]);
-  let license = parseFloat(lic_result.stdout.toString()) || 0;
+  const lic_result = execSync(`python3 metrics/license.py ${owner} ${repo} ${token}`);
+  let license = parseFloat(lic_result.toString()) || 0;
+  console.log("license: ", license)
   if (license < 0.5) {
     console.error(`Not ingestible due to low license: ${license}`);
-    return { ingestible: false, dependency_score: 0, pull_req_score: 0 };
+    return { ingestible: false, bus_factor, license, ramp_up: 0, responsiveness: 0, correctness: 0, dependency_score: 0, pull_req_score: 0 };
   }
 
   // Calculates ramp up metric
-  const ru_result = spawnSync("python", ["ramp_up.py", owner, repo, token]);
-  let ramp_up = parseFloat(ru_result.stdout.toString()) || 0;
+  const ru_result = execSync(`python3 metrics/ramp_up.py ${owner} ${repo} ${token}`);
+  let ramp_up = parseFloat(ru_result.toString()) || 0;
+  console.log("ramp_up: ", ramp_up)
   if (ramp_up < 0.5) {
     console.error(`Not ingestible due to low ramp_up: ${ramp_up}`);
-    return { ingestible: false, dependency_score: 0, pull_req_score: 0 };
+    return { ingestible: false, bus_factor, license, ramp_up, responsiveness: 0, correctness: 0, dependency_score: 0, pull_req_score: 0 };
   }
   
   // Calculates reponsiveness metric
-  const resp_result = spawnSync("python", ["responsive_maintainer.py", owner, repo, token]);
-  let responsiveness = parseFloat(resp_result.stdout.toString()) || 0;
+  const resp_result = execSync(`python3 metrics/responsive_maintainer.py ${owner} ${repo} ${token}`);
+  let responsiveness = parseFloat(resp_result.toString()) || 0;
+  console.log("responsiveness: ", responsiveness)
   if (responsiveness < 0.5) {
     console.error(`Not ingestible due to low responsiveness: ${responsiveness}`);
-    return { ingestible: false, dependency_score: 0, pull_req_score: 0 };
+    return { ingestible: false, bus_factor, license, ramp_up, responsiveness, correctness: 0, dependency_score: 0, pull_req_score: 0 };
   }
 
   // Calculates the correctness metric
   // Note: the correctness script creates a local folder: Repo-Analysis after running. To test the script again, the folder needs to be deleted before running.
-  const cor_result = spawnSync("python", ["correctness.py", owner, repo, token, responsiveness.toString()]);
-  let correctness = parseFloat(cor_result.stdout.toString()) || 0;
+  const cor_result = execSync(`python3 metrics/correctness.py ${owner} ${repo} ${token} ${responsiveness.toString()}`);
+  let correctness = 0;
+  // there might be error deleting the folder, but it is fine
+  // if the folder is not deleted, the error will occur
+  // we can ignore the error and just get he correctness score
+  if(cor_result.toString().includes("Error while deleting folder")) {
+    // if system is windows, remove the folder
+    if (process.platform === "win32") {
+      execSync(`rmdir /s /q Repo-Analysis`);
+    } else {
+      execSync(`rm -rf Repo-Analysis`);
+    }
+
+    // get the correctness score
+    let result = cor_result.toString().split("\n")[1]
+    if (result){
+      correctness = parseFloat(result) || 0;
+    }
+  }  else {
+    correctness = parseFloat(cor_result.toString()) || 0;
+  }
+
+  console.log("correctness: ", correctness)
   if (correctness < 0.5) {
     console.error(`Not ingestible due to low correctness: ${correctness}`);
-    return { ingestible: false, dependency_score: 0, pull_req_score: 0 };
+    return { ingestible: false, bus_factor, license, ramp_up, responsiveness, correctness, dependency_score: 0, pull_req_score: 0 };
   }
 
   //console.log("bf: ", bus_factor, ", lic: ", license, ", ru: ", ramp_up, ", resp: ", responsiveness, ", cor: ", correctness);
 
   // Calculates the dependency metric
-  const dep_result = spawnSync("python", ["metric_dependencies.py", repo_url, token]);
-  let dependency_score = parseFloat(dep_result.stdout.toString()) || 0;
+  const dep_result = execSync(`python3 metrics/metric_dependencies.py ${repo_url} ${token}`);
+  let dependency_score = parseFloat(dep_result.toString()) || 0;
 
   // Calculates the pull request metric
-  const pq_result = spawnSync("python", ["metric_pull_request.py", repo_url, token]);
-  let pull_req_score = parseFloat(pq_result.stdout.toString()) || 0;
-
+  const pq_result = execSync(`python3 metrics/metric_pull_request.py ${repo_url} ${token}`);
+  let pull_req_score = parseFloat(pq_result.toString()) || 0;
   
-  
-  // The repo is ingestible at this point
-  //console.log('The repo is ingestible');
-  return { ingestible: true, dependency_score: dependency_score, pull_req_score: pull_req_score };
+  // return all the seven metrics
+  return { ingestible: true, bus_factor, license, ramp_up, responsiveness, correctness, dependency_score, pull_req_score };
 }
 
 const run_metrics = async (/** @type {string} */ url) => {
-  const { ingestible, dependency_score, pull_req_score } = await childProcess(url);
-  console.log('Ingestible:', ingestible);
-  console.log('Dependency Score:', dependency_score);
-  console.log('Pull Request Score:', pull_req_score);
-  return { ingestible, dependency_score, pull_req_score };
+  const { ingestible, bus_factor, license, ramp_up, responsiveness, correctness, dependency_score, pull_req_score } = await childProcess(url);
+  return { ingestible, bus_factor, license, ramp_up, responsiveness, correctness, dependency_score, pull_req_score };
 }
 
 const url = process.argv[2]; // run as: node run_metrics.mjs repoUrl, so the url is the second index
