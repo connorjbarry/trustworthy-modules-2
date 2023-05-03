@@ -7,6 +7,7 @@ import authMiddleware from "~/middleware/authMiddleware";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const id = req.query.id;
+  console.log(req);
 
   if (!id) {
     res.status(400).json({
