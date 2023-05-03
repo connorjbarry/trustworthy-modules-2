@@ -22,7 +22,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     skip: 10 * offset,
     take: 10,
   });
-  console.log(req);
   res.status(200).json(body);
 };
 

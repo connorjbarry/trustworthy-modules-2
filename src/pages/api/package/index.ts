@@ -229,7 +229,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   });
 
   // const body = await prisma.indivPkg.findMany();
-  console.log(req);
 
   res.status(201).json({
     metadata: {
