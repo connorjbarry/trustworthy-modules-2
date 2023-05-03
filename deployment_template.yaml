@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: priv-reg
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: priv-reg
+  template:
+    metadata:
+      labels:
+        app: priv-reg
+    spec:
+      containers:
+      - name: priv-reg
+        image: gcr.io/trustworthy-modules-2/priv-reg:$GITHUB_SHA
+        ports:
+        - containerPort: 3000
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: db-url
+              key: url
+        - name: NEXTAUTH_URL
+          valueFrom:
+            secretKeyRef:
+              name: nextauth-url
+              key: url
+        - name: NEXTAUTH_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: nextauth-secret
+              key: sec
+        - name: NEXT_PUBLIC_NEXTAUTH_URL
+          valueFrom:
+            secretKeyRef:
+              name: nextauth-public-url
+              key: url
+        - name: GOOGLE_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: google-id
+              key: id
+        - name: GOOGLE_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: google-secret
+              key: sec
+        - name: GITHUB_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: github-id
+              key: id
+        - name: GITHUB_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: github-secret
+              key: sec
+        - name: DISCORD_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: discord-id
+              key: id
+        - name: DISCORD_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: discord-secret
+              key: sec
