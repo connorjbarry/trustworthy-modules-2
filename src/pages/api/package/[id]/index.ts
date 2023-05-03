@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "~/server/db";
 import type { IndivPkg } from "@prisma/client";
+import authMiddleware from "~/middleware/authMiddleware";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const id = req.query.id;
@@ -29,7 +32,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const pkgName = body.name;
     const version = body.version;
     const pkgId = body.id;
-    const url = body.githubLink;
 
     res.status(200).json({
       metadata: {
@@ -38,8 +40,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         ID: pkgId,
       },
       data: {
-        URL: url,
-        JSProgram: "TODO",
+        content: body.fileURL,
+        JSProgram: body.JSProgram,
       },
     });
     return;
@@ -56,8 +58,33 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     // TODO: NEED TO FIGURE OUT WHAT PARAMS CAN BE UPDATED
+    const name = (req.body.name ?? "") as string;
+    const version = (req.body.version ?? "") as string;
+    const content = (req.body.content ?? "") as string;
+    const jsProgram = (req.body.JSProgram ?? "") as string;
 
-    res.status(200).json({ message: "Version is updated." });
+    if (!name && !version && !content && !jsProgram) {
+      res.status(400).json({
+        code: "400",
+        message:
+          "There is missing field(s) in the PackageData/AuthenticationToken or it is formed improperly.",
+      });
+      return;
+    }
+
+    await prisma.indivPkg.update({
+      where: {
+        id: id as string,
+      },
+      data: {
+        name: name,
+        version: version,
+        fileURL: content,
+        JSProgram: jsProgram,
+      },
+    });
+
+    res.status(200).json({ message: "Package is updated." });
   } else if (req.method === "DELETE") {
     const body: IndivPkg | null = await prisma.indivPkg.findUnique({
       where: {
@@ -83,6 +110,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default handler;
+// export default handler;
 
-// export default authMiddleware(handler);
+export default authMiddleware(handler);

@@ -33,6 +33,11 @@ spec:
             secretKeyRef:
               name: nextauth-secret
               key: sec
+        - name: NEXT_PUBLIC_NEXTAUTH_URL
+          valueFrom:
+            secretKeyRef:
+              name: nextauth-public-url
+              key: url
         - name: GOOGLE_CLIENT_ID
           valueFrom:
             secretKeyRef:

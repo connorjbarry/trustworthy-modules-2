@@ -5,6 +5,7 @@ import { prisma } from "../../server/db";
 import { getSession } from "next-auth/react";
 import sha256 from "crypto-js/sha256";
 import Base64 from "crypto-js/enc-base64";
+import { User } from "@prisma/client";
 
 type AuthenticationRequest = {
   User: {
@@ -14,7 +15,7 @@ type AuthenticationRequest = {
   Secret: {
     password: string;
   };
-}
+};
 
 /*
  * Authentication handler for the /authenticate API endpoint.
@@ -26,34 +27,37 @@ type AuthenticationRequest = {
 
 const authHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   // get the session
-  const session = await getSession({ req });
+  // const session = await getSession({ req });
+
+  const username = (req.body.User.name ?? "") as string;
 
   // if the user is signed in, use get method to get the token
-  if (session?.user && req.method === "GET") {
+  if (req.method === "PUT") {
     // Signed in
-    if (session.user.email) {
+    if (username) {
       const user = await prisma.user.findUnique({
         where: {
-          email: session.user.email,
+          username: username,
         },
       });
       if (user && user.role === "ADMIN") {
         // if the user apiKey is not set, set it to a random string
+        let updated: User | null = null;
         if (!user.apiKey) {
-          const apiKey = Base64.stringify(sha256(session.user.email));
-          await prisma.user.update({
+          const apiKey = Base64.stringify(sha256(username));
+          updated = await prisma.user.update({
             where: {
-              email: session.user.email,
+              username: username,
             },
             data: {
               apiKey: apiKey,
             },
           });
         }
-
         // return the user and the apiKey with the given format
-        res.status(200).json({
-          token: `bearer ${user.apiKey as string}`,
+        const token = updated?.apiKey ?? user.apiKey;
+        return res.status(200).json({
+          token: `bearer ${token as string}`,
         });
       } else {
         res.status(400).json({
@@ -67,20 +71,19 @@ const authHandler = async (req: NextApiRequest, res: NextApiResponse) => {
           "There is missing field(s) in the PackageRegEx/AuthenticationToken or it is formed improperly.",
       });
     }
-
-  } else if(req.method === "POST") {
+  } else if (req.method === "POST") {
     /* if not signed in, see if the user provided username and password
-    * the body should contain the following fields:
-    *  const authenticationRequest = {
-    *    "User": {
-    *      "name": <username>,
-    *      "isAdmin": true
-    *    },
-    *    "Secret": {
-    *      "password": <password>
-    *    }
-    *  };
-    */
+     * the body should contain the following fields:
+     *  const authenticationRequest = {
+     *    "User": {
+     *      "name": <username>,
+     *      "isAdmin": true
+     *    },
+     *    "Secret": {
+     *      "password": <password>
+     *    }
+     *  };
+     */
     // get the body of the request
     const authenticationRequest = req.body as AuthenticationRequest;
 
@@ -90,11 +93,14 @@ const authHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     // if no username or password is provided, return 404
-    if (!authenticationRequest.User.name || !authenticationRequest.Secret.password) {
+    if (
+      !authenticationRequest.User.name ||
+      !authenticationRequest.Secret.password
+    ) {
       res.status(401).json({ error: "No username or password provided." });
       return;
     }
-    
+
     // with the username find the user in the database
     const user = await prisma.user.findUnique({
       where: {
@@ -118,7 +124,7 @@ const authHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         const apiKey = Base64.stringify(sha256(user.email as string));
         await prisma.user.update({
           where: {
-            email: user.email as string,
+            username: username,
           },
           data: {
             apiKey: apiKey,

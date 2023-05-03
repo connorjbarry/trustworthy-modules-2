@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -65,9 +66,7 @@ export default function SignIn(
         <button
           onClick={() =>
             void signIn(provider.id, {
-              callbackUrl: `${
-                process.env.NEXTAUTH_URL ?? window.location.origin
-              }/account`,
+              callbackUrl: `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/account`,
             })
           }
           className={`flex w-2/3 flex-row items-center justify-evenly rounded-2xl transition duration-150 hover:shadow-lg hover:shadow-slate-500/50 ${
@@ -106,9 +105,7 @@ export default function SignIn(
             onSubmit={(e) => {
               e.preventDefault();
               void signIn("credentials", {
-                callbackUrl: `${
-                  process.env.NEXTAUTH_URL ?? window.location.origin
-                }/account`,
+                callbackUrl: `${process.env.NEXT_PUBLIC_NEXTAUTH_URL}/account`,
                 redirect: true,
                 credentials: signInCredentials.credential,
                 password: signInCredentials.password,
