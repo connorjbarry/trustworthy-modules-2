@@ -19,10 +19,7 @@ type AuthenticationRequest = {
 
 /*
  * Authentication handler for the /authenticate API endpoint.
- * this endpoint returns a token that can be used to authenticate the user with the following format:
- * {
- *   token: "bearer <token>"
- * }
+ * this endpoint returns a token that can be used to authenticate the user with the api key
  */
 
 const authHandler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -108,6 +105,8 @@ const authHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
 
+    let apiKey = null;
+
     // if the user is not found, return 404
     if (!user) {
       res.status(401).json({ error: "No user matches the username." });
@@ -121,7 +120,7 @@ const authHandler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       // if the user apiKey is not set, set it to a random string
       if (!user.apiKey) {
-        const apiKey = Base64.stringify(sha256(user.email as string));
+        apiKey = Base64.stringify(sha256(user.email as string));
         await prisma.user.update({
           where: {
             username: username,
@@ -130,12 +129,12 @@ const authHandler = async (req: NextApiRequest, res: NextApiResponse) => {
             apiKey: apiKey,
           },
         });
+      } else {
+        apiKey = user.apiKey;
       }
     }
 
-    res.status(200).json({
-      token: `bearer ${user.apiKey as string}`,
-    });
+    res.status(200).json(`bearer ${apiKey as string}`);
   } else {
     res.status(401).json({ error: "Unauthorized or wrong method." });
   }
