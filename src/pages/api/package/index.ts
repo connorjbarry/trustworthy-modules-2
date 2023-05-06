@@ -24,8 +24,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       .json({ code: "500", message: "Internal Server Error, No Request Body" });
   }
 
-  const content = (req.body.content ?? "") as string;
-  let url = (req.body.url ?? "") as string;
+  const content = (req.body.Content ?? "") as string;
+  let url = (req.body.URL ?? "") as string;
   const jsProgram = (req.body.JSProgram ?? "") as string;
   let authToken = req.headers["x-authorization"] as string;
   if (authToken && authToken.split(" ")[0]?.toLowerCase() == "bearer") {
