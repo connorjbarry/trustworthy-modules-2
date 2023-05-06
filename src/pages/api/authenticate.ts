@@ -2,10 +2,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "../../server/db";
-import { getSession } from "next-auth/react";
+// import { getSession } from "next-auth/react";
 import sha256 from "crypto-js/sha256";
 import Base64 from "crypto-js/enc-base64";
-import { User } from "@prisma/client";
+import type { User } from "@prisma/client";
 
 type AuthenticationRequest = {
   User: {
@@ -134,7 +134,7 @@ const authHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
     }
 
-    res.status(200).json(`bearer ${apiKey as string}`);
+    res.status(200).json(`bearer ${apiKey}`);
   } else {
     res.status(401).json({ error: "Unauthorized or wrong method." });
   }
