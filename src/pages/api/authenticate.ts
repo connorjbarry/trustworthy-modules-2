@@ -53,9 +53,7 @@ const authHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         }
         // return the user and the apiKey with the given format
         const token = updated?.apiKey ?? user.apiKey;
-        return res.status(200).json({
-          token: `bearer ${token as string}`,
-        });
+        return res.status(200).json(`bearer ${token as string}`);
       } else {
         res.status(400).json({
           error:
