@@ -67,6 +67,7 @@ export default function SignIn(
           onClick={() =>
             void signIn(provider.id, {
               callbackUrl: `http://34.173.150.160/account`,
+              // callbackUrl: `http://localhost:3000/account`,
             })
           }
           className={`flex w-2/3 flex-row items-center justify-evenly rounded-2xl transition duration-150 hover:shadow-lg hover:shadow-slate-500/50 ${
@@ -107,6 +108,7 @@ export default function SignIn(
               void signIn("credentials", {
                 // ${process.env.NEXT_PUBLIC_NEXTAUTH_URL}
                 callbackUrl: `http://34.173.150.160/account`,
+                // callbackUrl: `http://localhost:3000/account`,
                 redirect: true,
                 credentials: signInCredentials.credential,
                 password: signInCredentials.password,
