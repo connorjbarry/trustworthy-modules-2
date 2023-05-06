@@ -23,52 +23,9 @@ type AuthenticationRequest = {
  */
 
 const authHandler = async (req: NextApiRequest, res: NextApiResponse) => {
-  // get the session
-  // const session = await getSession({ req });
-
   const username = (req.body.User.name ?? "") as string;
 
-  // if the user is signed in, use get method to get the token
   if (req.method === "PUT") {
-    // Signed in
-    if (username) {
-      const user = await prisma.user.findUnique({
-        where: {
-          username: username,
-        },
-      });
-      if (user && user.role === "ADMIN") {
-        // if the user apiKey is not set, set it to a random string
-        let updated: User | null = null;
-        if (!user.apiKey) {
-          const apiKey = Base64.stringify(sha256(username));
-          updated = await prisma.user.update({
-            where: {
-              username: username,
-            },
-            data: {
-              apiKey: apiKey,
-            },
-          });
-        }
-        // return the user and the apiKey with the given format
-        const token = updated?.apiKey ?? user.apiKey;
-        return res.status(200).json({
-          token: `bearer ${token as string}`,
-        });
-      } else {
-        res.status(400).json({
-          error:
-            "There is missing field(s) in the PackageRegEx/AuthenticationToken or it is formed improperly.",
-        });
-      }
-    } else {
-      res.status(400).json({
-        error:
-          "There is missing field(s) in the PackageRegEx/AuthenticationToken or it is formed improperly.",
-      });
-    }
-  } else if (req.method === "POST") {
     /* if not signed in, see if the user provided username and password
      * the body should contain the following fields:
      *  const authenticationRequest = {
