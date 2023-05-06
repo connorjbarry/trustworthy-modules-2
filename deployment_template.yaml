@@ -68,3 +68,8 @@ spec:
             secretKeyRef:
               name: discord-secret
               key: sec
+        - name: GITHUB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: github-token
+              key: token
