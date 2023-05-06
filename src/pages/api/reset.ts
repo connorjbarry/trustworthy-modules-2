@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import type { NextApiRequest, NextApiResponse } from "next";
-import authMiddleware from "~/middleware/authMiddleware";
+// import authMiddleware from "~/middleware/authMiddleware";
 import { prisma } from "~/server/db";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -27,4 +27,4 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
 // need to send through middleware
 
-export default authMiddleware(handler);
+export default handler;
