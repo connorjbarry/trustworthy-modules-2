@@ -207,7 +207,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   setTimeout(() => {
     zip.close();
     console.log("closed zip");
-  }, 1000);
+  }, 3000);
 
   const user = await prisma.user.findUnique({
     where: {
