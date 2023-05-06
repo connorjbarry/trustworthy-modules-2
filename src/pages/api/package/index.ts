@@ -52,13 +52,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     ? bearerToken.split(" ")[1]
     : "";
 
-  if ((!content || !url) && !jsProgram) {
-    res.status(400).json({
+  if (content === "" && url === "") {
+    return res.status(400).json({
       code: "400",
       message:
         "There is missing field(s) in the PackageData/AuthenticationToken or it is formed improperly.",
     });
-    return;
   }
 
   if (url) {
@@ -204,6 +203,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       message: "Internal Server Error, could not read zip file.",
     });
   }
+
+  setTimeout(() => {
+    zip.close();
+    console.log("closed zip");
+  }, 1000);
 
   const user = await prisma.user.findUnique({
     where: {
