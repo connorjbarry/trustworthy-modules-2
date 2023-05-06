@@ -58,12 +58,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     // TODO: NEED TO FIGURE OUT WHAT PARAMS CAN BE UPDATED
-    const name = (req.body.name ?? "") as string;
-    const version = (req.body.version ?? "") as string;
-    const content = (req.body.content ?? "") as string;
+    const name = (req.body.Name ?? "") as string;
+    const version = (req.body.Version ?? "") as string;
+    const content = (req.body.Content ?? "") as string;
+    const url = (req.body.URL ?? "") as string;
     const jsProgram = (req.body.JSProgram ?? "") as string;
 
-    if (!name && !version && !content && !jsProgram) {
+    if (!name || !version || !content || !jsProgram || !url) {
       res.status(400).json({
         code: "400",
         message:
@@ -79,6 +80,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       data: {
         name: name,
         version: version,
+        githubLink: url,
         fileURL: content,
         JSProgram: jsProgram,
       },
